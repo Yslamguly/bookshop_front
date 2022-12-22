@@ -1,10 +1,9 @@
-import {Fragment, useContext} from 'react'
+import {Fragment} from 'react'
 import {Disclosure, Menu, Transition} from '@headlessui/react'
-import {Bars3Icon, BellIcon, XMarkIcon} from '@heroicons/react/24/outline'
+import {Bars3Icon, BellIcon, XMarkIcon,ShoppingCartIcon,ShoppingBagIcon} from '@heroicons/react/24/outline'
 import logo from '../assets/undraw_education_f8ru.svg'
 import {useUser} from '../hooks/auth/useUser';
 import { useNavigate } from "react-router-dom";
-import {useToken} from "../hooks/auth/useToken";
 import {useAuth} from "../hooks/UserContext";
 
 export default function NavBar() {
@@ -18,12 +17,12 @@ export default function NavBar() {
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
-    const { setAuth, auth } = useAuth();
-    const user = useUser();
-    console.log(user)
+    const { setAuth, auth,rememberMe } = useAuth();
+    const user = useUser(rememberMe);
     const navigate = useNavigate();
     const logOut = () => {
         sessionStorage.removeItem('token')
+        localStorage.removeItem('token')
         setAuth(false)
         navigate('/books')
     }
@@ -94,10 +93,10 @@ export default function NavBar() {
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
                                         <button
                                             type="button"
-                                            className="rounded-full bg-gray-800 p-1 text-gray-400 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                            className="rounded-full mr-4  p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                         >
                                             <span className="sr-only">View notifications</span>
-                                            <BellIcon className="h-6 w-6" aria-hidden="true"/>
+                                            <ShoppingBagIcon className="h-6 w-6" aria-hidden="true"/>
                                         </button>
 
                                         {/* Profile dropdown */}
@@ -130,7 +129,7 @@ export default function NavBar() {
                                                                 href="#"
                                                                 className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
                                                             >
-                                                                {user.user.first_name}
+                                                                {user.first_name}
                                                             </a>
                                                         )}
                                                     </Menu.Item>

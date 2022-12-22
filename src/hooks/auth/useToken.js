@@ -1,11 +1,21 @@
 import {useState} from "react";
 
-export const useToken = () => {
+export const useToken = (isRememberMeChecked) => {
     const [token,setTokenInternal] = useState(() => {
-        return sessionStorage.getItem('token');
+        if(isRememberMeChecked){
+            return localStorage.getItem('token');
+        }
+        else{
+            return sessionStorage.getItem('token');
+        }
     })
     const setToken = (newToken) => {
-        sessionStorage.setItem('token',newToken)
+        if(isRememberMeChecked){
+            localStorage.setItem('token',newToken)
+        }
+        else{
+            sessionStorage.setItem('token',newToken)
+        }
         setTokenInternal(newToken)
     }
     return [token,setToken];

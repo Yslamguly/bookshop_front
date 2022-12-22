@@ -4,27 +4,17 @@ import { createContext, useContext, useEffect, useState } from 'react';
 const AuthContext = createContext({
     auth: null,
     setAuth: () => {},
-    user:null,
+    rememberMe:false,
+    setRememberMe: () =>{}
 });
 
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
-    const [auth, setAuth] = useState(sessionStorage.getItem("token"));
-    const [user, setUser] = useState(null);
-    useEffect(() => {
-        const isAuth = () => {
-            if(user){
-                setUser(user)
-            }
-            setUser(null)
-        };
-
-        isAuth();
-    }, [auth, user]);
-
+    const [auth, setAuth] = useState(sessionStorage.getItem("token") || localStorage.getItem("token"));
+    const [rememberMe,setRememberMe] = useState(!!localStorage.getItem("token"))
     return (
-        <AuthContext.Provider value={{ auth, setAuth, user }}>
+        <AuthContext.Provider value={{ auth, setAuth,rememberMe,setRememberMe }}>
             {children}
         </AuthContext.Provider>
     );

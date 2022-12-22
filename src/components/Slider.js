@@ -1,12 +1,10 @@
-import React, { useEffect, useLayoutEffect, useState } from "react";
+import React, { useLayoutEffect, useState } from "react";
 import "../style/slider.css";
 
 const thumbsize = 10;
 
 export const Slider = (props) => {
     const [avg, setAvg] = useState((props.min + props.max) / 2);
-    // const [minVal, setMinVal] = useState(props.min);
-    // const [maxVal, setMaxVal] = useState(props.max);
 
     const width = 200;
     const minWidth =
@@ -30,14 +28,7 @@ export const Slider = (props) => {
         setAvg((props.priceTo + props.priceFrom) / 2);
     }, [props.priceFrom, props.priceTo]);
     return (
-        <div
-            className="min-max-slider"
-            // data-legendnum="2"
-            // data-rangemin={min}
-            // data-rangemax={max}
-            // data-thumbsize={thumbsize}
-            // data-rangewidth={width}
-        >
+        <div className="min-max-slider">
             <span className="float-left pt-2">{Math.round(props.priceFrom) + "$"}</span>
             <label htmlFor="min">{props.min}</label>
             <input

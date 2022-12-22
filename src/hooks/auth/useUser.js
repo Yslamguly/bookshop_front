@@ -1,8 +1,9 @@
 import {useState,useEffect} from "react";
 import {useToken} from "./useToken";
 
-export const useUser = () =>{
-    const [token] = useToken()
+export const useUser = (isRememberMeChecked) =>{
+
+    const [token] = useToken(isRememberMeChecked)
 
     const getPayloadFromToken = (token) => {
         const encodePayload = token.split('.')[1];
