@@ -26,7 +26,6 @@ export default function Books() {
             .then((response)=>{
                 const allBooks = response.data.outcome
                 setBooks(sortElements(sortOption,allBooks))
-                console.log(allBooks)
                 setTotalBooks(response.data.total_items)
                 return axios.get('http://localhost:8000/categories')
             }).then((response)=>{
@@ -61,8 +60,8 @@ export default function Books() {
         setCurrentPage(pageNumber);
     };
 
-    const sortElements = (options,array) =>{
-        switch (options){
+    const sortElements = (option,array) =>{
+        switch (option){
             case
                 "Date: new to old": return [...array].sort((a, b) => b.publication_year - a.publication_year)
             case
@@ -118,7 +117,6 @@ export default function Books() {
                             onNextPageClick = {onNextPageClick}
                 />
             </div>
-            {/*<BookDetails/>*/}
         </>
 
     )
