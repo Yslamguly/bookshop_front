@@ -3,6 +3,7 @@ import {useEffect} from "react";
 import AOS from "aos";
 import "aos/dist/aos.css";
 import { motion } from "framer-motion"
+import {Link} from "react-router-dom";
 
 export const BooksGrid = (props)=>{
     useEffect(() => {
@@ -13,7 +14,7 @@ export const BooksGrid = (props)=>{
             <div
                 className="grid grid-cols-1 gap-y-10 gap-x-6 sm:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 xl:gap-x-8">
                 {props.books.map((product) => (
-                    <div className="py-2">
+                    <div className="py-2" key={product.id}>
                         <div className="col-span-1 flex flex-col bg-white border-2 p-4 h-full justify-between" data-aos-once="true" data-aos="zoom-in-up">
                             <a key={product.id} href={"#"}>
                                 <motion.img
@@ -24,7 +25,7 @@ export const BooksGrid = (props)=>{
                                 />
                             </a>
                             <div className="mb-2 pb-2">
-                                <a href={"#"}><h3 className="mt-4 text-sm font-medium text-gray-900 hover:text-indigo-700">{product.title}</h3></a>
+                                <Link to={`/books/${product.id}`}><h3 className="mt-4 text-sm font-medium text-gray-900 hover:text-indigo-700">{product.title}</h3></Link>
                                 <p className="mt-2 text-sm text-gray-700">Jane Austin</p>
                                 <div className="flex flex-row justify-between">
                                     <p className="mt-1 text-lg font-medium text-indigo-700">{product.selling_price + "$"}</p>
