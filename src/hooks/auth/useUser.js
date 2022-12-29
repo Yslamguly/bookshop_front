@@ -1,9 +1,11 @@
 import {useState,useEffect} from "react";
 import {useToken} from "./useToken";
+import {useAuth} from "../UserContext";
 
 export const useUser = (isRememberMeChecked) =>{
 
     const [token] = useToken(isRememberMeChecked)
+    const {setUserId} =  useAuth()
 
     const getPayloadFromToken = (token) => {
         const encodePayload = token.split('.')[1];
@@ -22,6 +24,7 @@ export const useUser = (isRememberMeChecked) =>{
         }
         else{
             setUser(getPayloadFromToken(token));
+            setUserId(user.id)
         }
     },[token])
 
