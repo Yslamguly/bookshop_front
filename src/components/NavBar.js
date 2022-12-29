@@ -1,10 +1,12 @@
 import {Fragment} from 'react'
 import {Disclosure, Menu, Transition} from '@headlessui/react'
-import {Bars3Icon, BellIcon, XMarkIcon,ShoppingCartIcon,ShoppingBagIcon} from '@heroicons/react/24/outline'
+import {Bars3Icon, XMarkIcon,ShoppingBagIcon} from '@heroicons/react/24/outline'
 import logo from '../assets/undraw_education_f8ru.svg'
 import {useUser} from '../hooks/auth/useUser';
-import { useNavigate } from "react-router-dom";
+import {useNavigate} from "react-router-dom";
 import {useAuth} from "../hooks/UserContext";
+import {useShoppingCart} from "../hooks/ShoppingCartContext";
+import {logout} from "../hooks/auth/logout";
 
 export default function NavBar() {
     const navigation = [
@@ -18,11 +20,11 @@ export default function NavBar() {
         return classes.filter(Boolean).join(' ')
     }
     const { setAuth, auth,rememberMe } = useAuth();
+    const {setShowShoppingCart,showShoppingCart} = useShoppingCart()
     const user = useUser(rememberMe);
     const navigate = useNavigate();
     const logOut = () => {
-        sessionStorage.removeItem('token')
-        localStorage.removeItem('token')
+        logout()
         setAuth(false)
         navigate('/books')
     }
@@ -96,7 +98,7 @@ export default function NavBar() {
                                             className="rounded-full mr-4  p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                         >
                                             <span className="sr-only">View notifications</span>
-                                            <ShoppingBagIcon className="h-6 w-6" aria-hidden="true"/>
+                                            <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" onClick={()=>setShowShoppingCart(!showShoppingCart)}/>
                                         </button>
 
                                         {/* Profile dropdown */}
@@ -180,21 +182,6 @@ export default function NavBar() {
                                 ))}
                             </div>
                         </Disclosure.Panel>
-                        {/*//TODO fix this*/}
-                        <div className="bg-indigo-900 text-center py-4 lg:px-4">
-                            <div
-                                className="p-2 bg-indigo-800 items-center text-indigo-100 leading-none lg:rounded-full flex lg:inline-flex"
-                                role="alert">
-                            <span
-                                className="flex rounded-full bg-indigo-500 uppercase px-2 py-1 text-xs font-bold mr-3">New</span>
-                                <span className="font-semibold mr-2 text-left flex-auto">Get the coolest t-shirts from our brand new store</span>
-                                <svg className="fill-current opacity-75 h-4 w-4" xmlns="http://www.w3.org/2000/svg"
-                                     viewBox="0 0 20 20">
-                                    <path
-                                        d="M12.95 10.707l.707-.707L8 4.343 6.586 5.757 10.828 10l-4.242 4.243L8 15.657l4.95-4.95z"/>
-                                </svg>
-                            </div>
-                        </div>
                     </>
                 )}
             </Disclosure>
