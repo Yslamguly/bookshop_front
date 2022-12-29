@@ -2,11 +2,13 @@ import { BrowserRouter as Router, Route, Routes } from 'react-router-dom';
 import { UserInfoPage } from './pages/UserInfoPage';
 import {PrivateRoute} from "./hooks/auth/PrivateRoutes";
 import SignIn from "./pages/SignIn";
-import {ShoppingCart} from "./pages/ShoppingCart";
 import {SignUp} from "./pages/SignUp";
 import Books from "./pages/Books";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
+import {PageNotFound} from "./pages/PageNotFound";
+import {BookDetails} from "./pages/BookDetails";
+import {UnauthorizedPage} from "./pages/401";
 
 
 export const Routess = () => {
@@ -17,19 +19,15 @@ export const Routess = () => {
                 <Route path="/"
                     element={
                         <PrivateRoute>
-                            <UserInfoPage />
-                        </PrivateRoute>}
-                />
-                <Route
-                    path="/shopping_cart"
-                    element={
-                        <PrivateRoute>
-                            <ShoppingCart />
+                            <UserInfoPage/>
                         </PrivateRoute>}
                 />
                 <Route path={"/login"} element={<SignIn/>}/>
                 <Route path={"/signup"} element={<SignUp/>}/>
                 <Route path={"/books"} element={<Books/>}/>
+                <Route element={<BookDetails />} path="/books/:bookId"/>
+                <Route path="*" element={<PageNotFound />} />
+                <Route path={"/401"} element={<UnauthorizedPage/>}/>
             </Routes>
             <Footer/>
         </Router>
