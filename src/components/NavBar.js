@@ -81,15 +81,22 @@ export default function NavBar() {
                                 {!auth ?
                                     <div
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
+                                        <button
+                                            type="button"
+                                            className="rounded-full mr-4  p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
+                                        >
+                                            <span className="sr-only">View notifications</span>
+                                            <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" onClick={()=>setShowShoppingCart(true)}/>
+                                        </button>
                                         <a href="/login" className="text-indigo-400 hover:text-indigo-500 pr-4">
                                             Sign in
                                         </a>
-                                        <a
-                                            href="/signup"
-                                            className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
-                                        >
-                                            Sign up
-                                        </a>
+                                        {/*<a*/}
+                                        {/*    href="/signup"*/}
+                                        {/*    className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-2 py-1 text-base font-medium text-white shadow-sm hover:bg-indigo-700"*/}
+                                        {/*>*/}
+                                        {/*    Sign up*/}
+                                        {/*</a>*/}
                                     </div> :
                                     <div
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
