@@ -7,7 +7,8 @@ import {useAuth} from "../hooks/UserContext";
 
 
 export function SignUp() {
-    const [token, setToken] = useToken()
+    const [isRememberMeChecked, setIsRememberMeChecked] = useState(false) //create a function that changes state and sets the global user to true
+    const [token, setToken] = useToken(isRememberMeChecked)
     const [showErrorMessage, setShowErrorMessage] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [firstName, setFirstName] = useState('');
@@ -17,9 +18,14 @@ export function SignUp() {
     const [confirmPasswordValue, setConfirmPasswordValue] = useState('')
     const [phoneNumber, setPhoneNumber] = useState('')
     const navigate = useNavigate();
-    const { setAuth } = useAuth();
+    const {setAuth, setRememberMe, rememberMe} = useAuth();
+
     function areInputsEmpty(){
         return !lastName||!firstName||!emailValue|| !passwordValue || passwordValue!==confirmPasswordValue
+    }
+    const onRememberMeClicked = () => {
+        setRememberMe(!rememberMe)
+        setIsRememberMeChecked(!rememberMe)
     }
     const onCreateButtonClick = async () => {
         if(areInputsEmpty()){
@@ -27,19 +33,41 @@ export function SignUp() {
             setShowErrorMessage(true)
             return
         }
-        await axios.post('http://localhost:8000/customers/register', {
-            first_name: firstName,
-            last_name: lastName,
-            email_address: emailValue,
-            phone_number: phoneNumber,
-            password: passwordValue,
-            confirm_password: confirmPasswordValue
-        }).then((response) => setToken(response.data.token))
-            .then(()=>setAuth(true))
-            .then(() => navigate('/'))
-            .catch(() => setShowErrorMessage(true))
-            .then(()=>setErrorMessage('Password must be between 6-20 chars and contain uppercase and lowercase letters!'))
-            // .catch(() => navigate('/signup'))
+        try{
+            const response = await axios.post(`http://localhost:8000/customers/register`,{
+                first_name: firstName,
+                last_name: lastName,
+                email_address: emailValue,
+                phone_number: phoneNumber,
+                password: passwordValue,
+                confirm_password: confirmPasswordValue
+            });
+            const {token} = response.data
+            setToken(token)
+            setAuth(true)
+            navigate("/books")
+            window.location.reload(true);
+        }catch (e){
+            setShowErrorMessage(true)
+            setErrorMessage('Password must be between 6-20 chars and contain uppercase and lowercase letters!')
+        }
+        // await axios.post('http://localhost:8000/customers/register', {
+        //     first_name: firstName,
+        //     last_name: lastName,
+        //     email_address: emailValue,
+        //     phone_number: phoneNumber,
+        //     password: passwordValue,
+        //     confirm_password: confirmPasswordValue
+        // }).then((response) => {
+        //     const {token} = response.data
+        //     setToken(token)
+        //     setAuth(true)
+        //     navigate("/books")
+        //     window.location.reload(true);
+        // })
+        //     .catch(() => setShowErrorMessage(true))
+        //     .then(()=>setErrorMessage('Password must be between 6-20 chars and contain uppercase and lowercase letters!'))
+        //     // .catch(() => navigate('/signup'))
     }
     return (
         <>
@@ -174,6 +202,7 @@ export function SignUp() {
                                     name="remember-me"
                                     type="checkbox"
                                     className="h-4 w-4 rounded border-gray-300 text-indigo-600 focus:ring-indigo-500"
+                                    onChange={onRememberMeClicked}
                                 />
                                 <label htmlFor="remember-me" className="ml-2 block text-sm text-gray-900">
                                     Remember me
