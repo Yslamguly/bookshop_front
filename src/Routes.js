@@ -9,6 +9,7 @@ import Footer from "./components/Footer";
 import {PageNotFound} from "./pages/PageNotFound";
 import {BookDetails} from "./pages/BookDetails";
 import {UnauthorizedPage} from "./pages/401";
+import {InternalServerError} from "./pages/500";
 
 
 export const Routess = () => {
@@ -26,8 +27,9 @@ export const Routess = () => {
                 <Route path={"/signup"} element={<SignUp/>}/>
                 <Route path={"/books"} element={<Books/>}/>
                 <Route element={<BookDetails />} path="/books/:bookId"/>
-                <Route path="*" element={<PageNotFound />} />
+                <Route element={<InternalServerError/>} path={"/500"}/>
                 <Route path={"/401"} element={<UnauthorizedPage/>}/>
+                <Route path="*" element={<PageNotFound />} />
             </Routes>
             <Footer/>
         </Router>
