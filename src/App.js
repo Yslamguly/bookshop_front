@@ -7,7 +7,7 @@ export const App = () => {
     return (
             <div className="page-container">
 
-                {showShoppingCart &&<ShoppingCart showShoppingCart={showShoppingCart} setShowShoppingCart={(bool)=>setShowShoppingCart(bool)}  />}
+                <ShoppingCart showShoppingCart={showShoppingCart} setShowShoppingCart={(bool)=>setShowShoppingCart(bool)}  />
                 <Routess/>
             </div>
     );
