@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from 'react'
+import {Fragment, useCallback, useEffect, useState} from 'react'
 import {Dialog, Transition} from '@headlessui/react'
 import {XMarkIcon} from '@heroicons/react/24/outline'
 import axios from "axios";
@@ -8,15 +8,21 @@ import {logout} from "../hooks/auth/logout";
 import empty_cart from "../assets/empty_cart.svg";
 import ErrorMessage from "../components/ErrorMessage";
 import SessionExpiredBanner from "../components/SessionExpiredBanner";
+import {useShoppingCart} from "../hooks/ShoppingCartContext";
 
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
     const [showError, setShowError] = useState(false)
-    let [totalPrice,setTotalPrice] = useState(0)
+    let [totalPrice, setTotalPrice] = useState(0)
     const {userId} = useAuth()
-    const {rememberMe, setAuth} = useAuth()
+    const {rememberMe, setAuth, auth} = useAuth()
     const [token] = useToken(rememberMe)
-    useEffect(() => {
+    const fetchNonAuthShoppingCart = useCallback(() => {
+        fetch(`./NonAuthShoppingCart.json`).then(response => response.json()).then(data => {
+            setBooks(data)
+        })
+    }, [])
+    const fetchShoppingCart = useCallback(() => {
         async function getData() {
             await axios.get(`http://localhost:8000/shopping_cart/${userId}`, {
                 headers: {authorization: `Bearer ${token}`}
@@ -31,14 +37,24 @@ export const ShoppingCart = (props) => {
                         // window.location.pathname = "/401"
                     }
                     if (error.response.status === 500) {
-                         window.location.pathname = "/500"
+                        window.location.pathname = "/500"
                     }
                 })
         }
+
         getData()
-    }, [books])
-    //TODO calculate subtotal price of the product in the shopping cart
+    }, [userId])
+    useEffect(() => {
+        if (!userId || !auth) {
+            fetchNonAuthShoppingCart()
+        }
+        if (userId) {
+            fetchShoppingCart()
+        }
+    }, [books, fetchNonAuthShoppingCart, fetchShoppingCart])
+
     const onRemoveClick = (bookId) => {
+        console.log(books)
         axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
             data: {shopping_cart_item_book_id: bookId},
             headers: {authorization: `Bearer ${token}`}
@@ -55,28 +71,39 @@ export const ShoppingCart = (props) => {
             }
         })
     }
-    const onQuantityChange = (quantity, bookId,price) => {
+    const onQuantityChange = (quantity, bookId, price) => {
         axios.patch(`http://localhost:8000/shopping_cart/updateQuantity/${userId}`, {
             book_id: bookId,
             quantity: quantity,
             total_price: quantity * price
-        },{
-            headers:{authorization:`Bearer ${token}`}
-        }).then((response)=>{
+        }, {
+            headers: {authorization: `Bearer ${token}`}
+        }).then((response) => {
             console.log(response.data)
         }).catch(error => {
             if (error.response.status === 401) {
                 logout()
                 setAuth(false)
                 // window.location.pathname = "/401"
-            }
-            else {
+            } else {
                 window.location.pathname = "/500"
                 console.log(error)
             }
         })
         // console.log(quantity,bookId,price*quantity)
     }
+
+    const onCheckoutClick = () => {
+        console.log(books)
+    }
+    const calculateSubtotal = () =>{
+        let sum = 0;
+        books.map((product)=>(
+            sum+=product.quantity * product.selling_price
+        ))
+        return sum
+    }
+
     return (
         <>
             <ErrorMessage
@@ -85,7 +112,7 @@ export const ShoppingCart = (props) => {
                 header={'Error'}
                 description={'Error happened, please try again.'}
             />
-            <SessionExpiredBanner/>
+            {/*<SessionExpiredBanner/>*/}
             <Transition.Root show={props.showShoppingCart} as={Fragment}>
                 <Dialog as="div" className="relative z-1000" onClose={() => props.setShowShoppingCart(false)}>
                     <Transition.Child
@@ -166,7 +193,7 @@ export const ShoppingCart = (props) => {
                                                                                            min={1}
                                                                                            className='block p-0 m-0  text-xs border-0 rounded w-11 h-5 leading-relaxed float-left'
                                                                                            defaultValue={product.quantity}
-                                                                                           onChange={(e) => onQuantityChange(e.target.value, product.id,product.selling_price)}
+                                                                                           onChange={(e) => onQuantityChange(e.target.value, product.id, product.selling_price)}
                                                                                     />
                                                                                 </div>
                                                                                 <div className="flex">
@@ -213,17 +240,17 @@ export const ShoppingCart = (props) => {
                                                 <div
                                                     className="flex justify-between text-base font-medium text-gray-900">
                                                     <p>Subtotal</p>
-                                                    <p>${totalPrice}</p>
+                                                    <p>{calculateSubtotal()}$</p>
                                                 </div>
                                                 <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes
                                                     calculated at checkout.</p>
                                                 <div className="mt-6">
-                                                    <a
-                                                        href="#"
+                                                    <button
+                                                        onClick={()=>onCheckoutClick()}
                                                         className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                                                     >
                                                         Checkout
-                                                    </a>
+                                                    </button>
                                                 </div>
                                                 <div
                                                     className="mt-6 flex justify-center text-center text-sm text-gray-500">
