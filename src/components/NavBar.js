@@ -20,7 +20,7 @@ export default function NavBar() {
         return classes.filter(Boolean).join(' ')
     }
     const { setAuth, auth,rememberMe } = useAuth();
-    const {setShowShoppingCart,showShoppingCart} = useShoppingCart()
+    const {setShowShoppingCart} = useShoppingCart()
     const user = useUser(rememberMe);
     const navigate = useNavigate();
     const logOut = () => {
@@ -98,7 +98,7 @@ export default function NavBar() {
                                             className="rounded-full mr-4  p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
                                         >
                                             <span className="sr-only">View notifications</span>
-                                            <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" onClick={()=>setShowShoppingCart(!showShoppingCart)}/>
+                                            <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" onClick={()=>setShowShoppingCart(true)}/>
                                         </button>
 
                                         {/* Profile dropdown */}

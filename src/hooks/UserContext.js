@@ -13,7 +13,7 @@ const AuthContext = createContext({
 export const useAuth = () => useContext(AuthContext);
 
 const AuthProvider = ({ children }) => {
-    const [auth, setAuth] = useState(sessionStorage.getItem("token") || localStorage.getItem("token"));
+    const [auth, setAuth] = useState(!!(sessionStorage.getItem("token") || localStorage.getItem("token")));
     const [rememberMe,setRememberMe] = useState(!!localStorage.getItem("token"))
     const [userId,setUserId] = useState(null)
     return (
