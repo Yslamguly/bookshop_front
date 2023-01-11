@@ -83,7 +83,7 @@ export default function Books() {
     return (
         <>
             <div className="bg-white">
-                <div className="flex space-x-9 h-auto">
+                <div className="flex md:flex-nowrap  flex-wrap space-x-9 h-auto">
                     <div className="mb-auto max-w-2xl py-16 px-4 sm:py-15 sm:px-6 lg:max-w-7xl lg:px-8">
                         <Filters onApplyClick={()=>onApplyFiltersClick()}
                                  categories={categories} setCategoryId={(id)=>setCategoryId(id)}
