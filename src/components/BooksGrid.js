@@ -51,14 +51,14 @@ export const BooksGrid = (props) => {
                         <div className="py-2" key={product.id}>
                             <div className="col-span-1 flex flex-col bg-white border-2 p-4 h-full justify-between"
                                  data-aos-once="true" data-aos="zoom-in-up">
-                                <a key={product.id} href={"#"}>
+                                <Link to={`/books/${product.id}`} key={product.id} href={"/book"}>
                                     <motion.img
                                         whileHover={{scale: 1.06}}
                                         src={product.image}
                                         alt={product.imageAlt}
                                         className="h-full w-full object-cover object-center group-hover:opacity-75"
                                     />
-                                </a>
+                                </Link>
                                 <div className="mb-2 pb-2">
                                     <Link to={`/books/${product.id}`}><h3
                                         className="mt-4 text-sm font-medium text-gray-900 hover:text-indigo-700">{product.title}</h3>
