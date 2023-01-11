@@ -1,16 +1,19 @@
 import {useParams,useNavigate} from "react-router-dom";
-import {useBooks} from "../hooks/BooksContext";
 import {ShoppingBagIcon} from '@heroicons/react/24/outline'
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {Skeleton} from "../components/Skeleton";
+import {useToken} from "../hooks/auth/useToken";
+import {useAuth} from "../hooks/UserContext";
+import {logout} from "../hooks/auth/logout";
 
 export const BookDetails = () => {
     const {bookId} = useParams()
     const navigate = useNavigate();
     const [book, setBook] = useState()
-
-
+    const [active,setActive] = useState(false)
+    const [token] = useToken()
+    const {userId,setAuth} = useAuth()
     useEffect(() => {
         axios.get(`http://localhost:8000/books/details?book_id=${bookId}`)
             .then((response) => {
@@ -22,6 +25,33 @@ export const BookDetails = () => {
                 navigate('*')
             })
     }, [])
+    const onAddToCartClicked = async () =>{
+        setActive(true)
+        setTimeout(()=>{
+            setActive(false)
+        },2000)
+        await axios.post(`http://localhost:8000/shopping_cart/addBook/${userId}`,{
+            book_id:book.id,
+            price:book.selling_price
+        },{
+            headers:{authorization:`Bearer ${token}`}
+        })
+        .then((response)=>{
+                console.log(response)
+        })
+        .catch((error)=>{
+            if(error.response.status===401){
+                logout()
+                setAuth(false)
+                window.location.pathname = "/401"
+            }
+            else{
+                console.error(error)
+            }
+        })
+    }
+
+
     if (book) {
         return (
             <section className="text-gray-700 body-font overflow-hidden bg-white">
@@ -57,8 +87,10 @@ export const BookDetails = () => {
                             <div className="flex">
                                 <span className="title-font font-medium text-2xl text-gray-900">${book.selling_price}</span>
                                 <button
-                                    className="flex ml-auto bg-indigo-600 text-gray-200 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-700 rounded">
-                                    <ShoppingBagIcon className="h-5 w-5 mr-2" aria-hidden="true"/>Add to cart
+                                    onClick={onAddToCartClicked}
+                                    className={`flex ml-auto ${active ? "bg-green-600" : "bg-indigo-600"} text-gray-200 border-0 py-2 px-6 focus:outline-none hover:bg-indigo-700 rounded`}
+                                >
+                                    {active ? "Added to cart" : "Add to cart" }
                                 </button>
                                 <button
                                     className="rounded-full w-10 h-10 bg-gray-200 p-0 border-0 inline-flex items-center justify-center text-red-500 ml-4 ">
