@@ -87,6 +87,7 @@ export function SignUp() {
                         <li>The password should be between 6 to 20 characters</li>
                         <li>At least one lowercase character and an uppercase character</li>
                         <li>Inclusion of at least one numeric digit</li>
+                        <li>Phone number must be between 9 and 11 digits</li>
                     </ul>
                 </div>
             </div>
