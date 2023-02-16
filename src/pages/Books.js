@@ -33,8 +33,8 @@ export default function Books() {
         }).catch(error=>console.error(`Error: ${error}`))
     },[currentPage,sortOption])
 
-    const onApplyFiltersClick = ()=>{
-        axios.get(`http://localhost:8000/books?page=1&limit=${limitPerPage}&selling_price_from=${priceFrom}&selling_price_to=${priceTo}&publication_year_from=${publicationYearFrom}&publication_year_to=${publicationYearTo}&sort_value=id&category_id=${categoryId}`)
+    const onApplyFiltersClick = async ()=>{
+        await axios.get(`http://localhost:8000/books?page=1&limit=${limitPerPage}&selling_price_from=${priceFrom}&selling_price_to=${priceTo}&publication_year_from=${publicationYearFrom}&publication_year_to=${publicationYearTo}&sort_value=id&category_id=${categoryId}`)
             .then((response)=>{
                 const allBooks = response.data.outcome
                 setBooks(sortElements(sortOption,allBooks))
