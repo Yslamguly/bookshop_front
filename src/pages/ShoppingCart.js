@@ -7,20 +7,21 @@ import {useAuth} from "../hooks/UserContext";
 import {logout} from "../hooks/auth/logout";
 import empty_cart from "../assets/empty_cart.svg";
 import ErrorMessage from "../components/ErrorMessage";
-import SessionExpiredBanner from "../components/SessionExpiredBanner";
-import {useShoppingCart} from "../hooks/ShoppingCartContext";
+import {cart_items} from "../components/NonAuthShoppingCart";
+import SessionExpiredBanner from "../components/SessionExpiredBanner"; //TODO
 
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
     const [showError, setShowError] = useState(false)
-    let [totalPrice, setTotalPrice] = useState(0)
+    const [stripe,setStripe] = useState({})
     const {userId} = useAuth()
     const {rememberMe, setAuth, auth} = useAuth()
     const [token] = useToken(rememberMe)
     const fetchNonAuthShoppingCart = useCallback(() => {
-        fetch(`./NonAuthShoppingCart.json`).then(response => response.json()).then(data => {
-            setBooks(data)
-        })
+        setBooks(cart_items)
+        // fetch(`./books.json`).then(response => response.json()).then(data=>{
+        //     setBooks(data)
+        // })
     }, [])
     const fetchShoppingCart = useCallback(() => {
         async function getData() {
@@ -41,7 +42,6 @@ export const ShoppingCart = (props) => {
                     }
                 })
         }
-
         getData()
     }, [userId])
     useEffect(() => {
@@ -51,25 +51,30 @@ export const ShoppingCart = (props) => {
         if (userId) {
             fetchShoppingCart()
         }
-    }, [books, fetchNonAuthShoppingCart, fetchShoppingCart])
-
+    }, [books,fetchNonAuthShoppingCart,userId])
     const onRemoveClick = (bookId) => {
-        console.log(books)
-        axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
-            data: {shopping_cart_item_book_id: bookId},
-            headers: {authorization: `Bearer ${token}`}
-        }).then((response) => {
-            console.log(response)
-        }).catch((error) => {
-            if (error.response.status === 401) {
-                logout()
-                setAuth(false)
-                // window.location.pathname = "/401"
-            } else {
-                setShowError(true)
-                console.error(error)
-            }
-        })
+        if (!userId) {
+            setBooks(cart_items.filter(book => book.id !== bookId))
+            console.log(books)
+            // setBooks(books.filter(book=>book.id!==bookId))
+        } else {
+            axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
+                data: {shopping_cart_item_book_id: bookId},
+                headers: {authorization: `Bearer ${token}`}
+            }).then((response) => {
+                console.log(response)
+            }).catch((error) => {
+                if (error.response.status === 401) {
+                    logout()
+                    setAuth(false)
+                    // window.location.pathname = "/401"
+                } else {
+                    setShowError(true)
+                    console.error(error)
+                }
+            })
+        }
+        // console.log(books)
     }
     const onQuantityChange = (quantity, bookId, price) => {
         axios.patch(`http://localhost:8000/shopping_cart/updateQuantity/${userId}`, {
@@ -94,12 +99,19 @@ export const ShoppingCart = (props) => {
     }
 
     const onCheckoutClick = () => {
-        console.log(books)
+        axios.post('http://localhost:8000/stripe/create-checkout-session',{
+            books:books,
+            userId: userId
+        }).then((res)=>{
+            if(res.data.url){
+                window.location.href = res.data.url
+            }
+        }).catch((err)=>console.error(err))
     }
-    const calculateSubtotal = () =>{
+    const calculateSubtotal = () => {
         let sum = 0;
-        books.map((product)=>(
-            sum+=product.quantity * product.selling_price
+        books.map((product) => (
+            sum += product.quantity * product.selling_price
         ))
         return sum
     }
@@ -159,8 +171,8 @@ export const ShoppingCart = (props) => {
                                                 {books.length > 0 ?
                                                     <div className="mt-8">
                                                         <div className="flow-root">
-                                                            <ul role="list" className="-my-6 divide-y divide-gray-200">
-                                                                {books.map((product) => (
+                                                            <ul className="-my-6 divide-y divide-gray-200">
+                                                                { books.map((product) => (
 
                                                                     <li key={product.id} className="flex py-6">
                                                                         <div
@@ -208,14 +220,9 @@ export const ShoppingCart = (props) => {
                                                                             </div>
                                                                         </div>
                                                                     </li>
-                                                                ))}
+                                                                ))
+                                                                }
                                                             </ul>
-                                                            <button
-                                                                type="button"
-                                                                className="flex items-center justify-center px-1 py-2 float-right my-8 rounded-md border-transparent bg-indigo-600 font-medium text-white hover:text-indigo-500"
-                                                            >
-                                                                Update cart
-                                                            </button>
                                                         </div>
                                                     </div> :
                                                     <div>
@@ -245,12 +252,12 @@ export const ShoppingCart = (props) => {
                                                 <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes
                                                     calculated at checkout.</p>
                                                 <div className="mt-6">
-                                                    <button
-                                                        onClick={()=>onCheckoutClick()}
+                                                    <a
+                                                        onClick={() => onCheckoutClick()}
                                                         className="flex items-center justify-center rounded-md border border-transparent bg-indigo-600 px-6 py-3 text-base font-medium text-white shadow-sm hover:bg-indigo-700"
                                                     >
                                                         Checkout
-                                                    </button>
+                                                    </a>
                                                 </div>
                                                 <div
                                                     className="mt-6 flex justify-center text-center text-sm text-gray-500">
