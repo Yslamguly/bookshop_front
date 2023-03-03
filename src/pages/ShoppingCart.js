@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useState} from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import {Dialog, Transition} from '@headlessui/react'
 import {XMarkIcon} from '@heroicons/react/24/outline'
 import axios from "axios";
@@ -8,50 +8,36 @@ import {logout} from "../hooks/auth/logout";
 import empty_cart from "../assets/empty_cart.svg";
 import ErrorMessage from "../components/ErrorMessage";
 import {cart_items} from "../components/NonAuthShoppingCart";
-import SessionExpiredBanner from "../components/SessionExpiredBanner"; //TODO
 
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
     const [showError, setShowError] = useState(false)
-    const [stripe,setStripe] = useState({})
     const {userId} = useAuth()
-    const {rememberMe, setAuth, auth} = useAuth()
+    const {rememberMe, setAuth} = useAuth()
     const [token] = useToken(rememberMe)
-    const fetchNonAuthShoppingCart = useCallback(() => {
-        setBooks(cart_items)
-        // fetch(`./books.json`).then(response => response.json()).then(data=>{
-        //     setBooks(data)
-        // })
-    }, [])
-    const fetchShoppingCart = useCallback(() => {
-        async function getData() {
-            await axios.get(`http://localhost:8000/shopping_cart/${userId}`, {
-                headers: {authorization: `Bearer ${token}`}
-            }).then((response) => {
-                const allBooks = response.data
-                setBooks(allBooks)
+     function  fetchAuthShoppingCart() {
+        axios.get(`http://localhost:8000/shopping_cart/${userId}`, {
+            headers: {authorization: `Bearer ${token}`}
+        }).then((response) => {
+            const allBooks = response.data
+            setBooks(allBooks)
+        })
+            .catch(error => {
+                if (error.response.status === 401) {
+                    logout()
+                    setAuth(false)
+                    window.location.pathname = "/401"
+                }
+                if (error.response.status === 500) {
+                    window.location.pathname = "/500"
+                }
             })
-                .catch(error => {
-                    if (error.response.status === 401) {
-                        logout()
-                        setAuth(false)
-                        // window.location.pathname = "/401"
-                    }
-                    if (error.response.status === 500) {
-                        window.location.pathname = "/500"
-                    }
-                })
-        }
-        getData()
-    }, [userId])
+    }
     useEffect(() => {
-        if (!userId || !auth) {
-            fetchNonAuthShoppingCart()
-        }
         if (userId) {
-            fetchShoppingCart()
+            fetchAuthShoppingCart()
         }
-    }, [books,fetchNonAuthShoppingCart,userId])
+    }, [books,userId])
     const onRemoveClick = (bookId) => {
         if (!userId) {
             setBooks(cart_items.filter(book => book.id !== bookId))
@@ -74,7 +60,6 @@ export const ShoppingCart = (props) => {
                 }
             })
         }
-        // console.log(books)
     }
     const onQuantityChange = (quantity, bookId, price) => {
         axios.patch(`http://localhost:8000/shopping_cart/updateQuantity/${userId}`, {
@@ -95,7 +80,6 @@ export const ShoppingCart = (props) => {
                 console.log(error)
             }
         })
-        // console.log(quantity,bookId,price*quantity)
     }
 
     const onCheckoutClick = () => {
