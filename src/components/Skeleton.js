@@ -1,7 +1,7 @@
 export const Skeleton = () =>{
     return(
-        <div role="status" className="space-y-8 animate-pulse md:space-y-0 md:space-x-8 md:flex md:items-center">
-            <div className="flex justify-center items-center w-full h-48 bg-gray-300 rounded sm:w-96 dark:bg-gray-700">
+        <div role="status" className="space-y-8  animate-pulse py-16 lg:h-screen md:space-y-0 md:space-x-8 md:flex md:items-center">
+            <div className="flex justify-center items-center w-full h-96 bg-gray-300 rounded sm:w-96 dark:bg-gray-700">
                 <svg className="w-12 h-12 text-gray-200" xmlns="http://www.w3.org/2000/svg" aria-hidden="true"
                      fill="currentColor" viewBox="0 0 640 512">
                     <path
