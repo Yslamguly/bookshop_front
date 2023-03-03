@@ -1,12 +1,11 @@
 import {useParams, useNavigate} from "react-router-dom";
-import {ShoppingBagIcon} from '@heroicons/react/24/outline'
 import {useEffect, useState} from "react";
 import axios from "axios";
 import {Skeleton} from "../components/Skeleton";
 import {useToken} from "../hooks/auth/useToken";
 import {useAuth} from "../hooks/UserContext";
 import {logout} from "../hooks/auth/logout";
-import {cart_items} from "../components/NonAuthShoppingCart";
+// import {cart_items} from "../components/NonAuthShoppingCart";
 
 export const BookDetails = () => {
     const {bookId} = useParams()
@@ -26,7 +25,6 @@ export const BookDetails = () => {
                     const res = response.data.query.pages
                     const pageId = Object.keys(res)[0]
                     setBookDescription(response.data.query.pages[pageId]["extract"])
-
                 }).catch((error) => console.error(error))
             })
             .catch(error => {
@@ -35,32 +33,30 @@ export const BookDetails = () => {
             })
     }, [])
     const onAddToCartClicked = async () => {
-        if (!userId) {
-            cart_items.push(book)
-        }
-        if (userId) {
-            await axios.post(`http://localhost:8000/shopping_cart/addBook/${userId}`, {
-                book_id: book.id,
-                price: book.selling_price
-            }, {
-                headers: {authorization: `Bearer ${token}`}
-            })
-                .then((response) => {
-                    setActive(true)
-                    setTimeout(() => {
-                        setActive(false)
-                    }, 2000)
-                })
-                .catch((error) => {
-                    if (error.response.status === 401) {
-                        logout()
-                        setAuth(false)
-                        window.location.pathname = "/401"
-                    } else {
-                        console.error(error)
-                    }
-                })
-        }
+        // if (!userId) {
+        //     cart_items.push(book)
+        // }
+        await axios.post(`http://localhost:8000/shopping_cart/addBook/${userId}`, {
+            book_id: book.id,
+            price: book.selling_price
+        }, {
+            headers: {authorization: `Bearer ${token}`}
+        })
+        .then((response) => {
+            setActive(true)
+            setTimeout(() => {
+                setActive(false)
+            }, 2000)
+        })
+        .catch((error) => {
+            if (error.response.status === 401) {
+                logout()
+                setAuth(false)
+                window.location.pathname = "/401"
+            } else {
+                console.error(error)
+            }
+        })
     }
 
 
@@ -88,12 +84,12 @@ export const BookDetails = () => {
                                 </span>
                             </div>
                             {bookDescription &&
-                            <div>
-                                <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">Description</h1>
-                                <p className="leading-relaxed whitespace-pre-line">{bookDescription}</p>
-                                <h1 className="text-sm title-font pt-3 italic text-gray-500 tracking-widest">Source:
-                                    Wikipedia</h1>
-                            </div>}
+                                <div>
+                                    <h1 className="text-gray-900 text-3xl title-font font-medium mb-1">Description</h1>
+                                    <p className="leading-relaxed whitespace-pre-line">{bookDescription}</p>
+                                    <h1 className="text-sm title-font pt-3 italic text-gray-500 tracking-widest">Source:
+                                        Wikipedia</h1>
+                                </div>}
 
 
                             <div className="flex mt-6 items-center pb-5 border-b-2 border-gray-200 mb-5">
