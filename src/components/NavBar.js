@@ -1,7 +1,7 @@
 import {Fragment} from 'react'
 import {Disclosure, Menu, Transition} from '@headlessui/react'
 import {Bars3Icon, XMarkIcon,ShoppingBagIcon} from '@heroicons/react/24/outline'
-import logo from '../assets/undraw_education_f8ru.svg'
+import logo from '../assets/inkwellBook.svg'
 import {useUser} from '../hooks/auth/useUser';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../hooks/UserContext";
@@ -51,13 +51,13 @@ export default function NavBar() {
                                     <div className="flex flex-shrink-0 items-center">
                                         <img
                                             className="block h-8 w-auto lg:hidden"
-                                            src="https://tailwindui.com/img/logos/mark.svg?color=indigo&shade=500"
-                                            alt="Your Company"
+                                            src={logo}
+                                            alt="InkwellBooks"
                                         />
                                         <img
-                                            className="hidden h-8 w-auto lg:block"
+                                            className="hidden h-10 w-auto  lg:block"
                                             src={logo}
-                                            alt="Your Company"
+                                            alt="InkwellBooks"
                                         />
                                     </div>
                                     <div className="hidden sm:ml-6 sm:block">
