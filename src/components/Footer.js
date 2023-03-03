@@ -1,4 +1,4 @@
-import logo from '../assets/undraw_education_f8ru.svg'
+import logo from '../assets/inkwellBook.svg'
 import mastercard from '../assets/mastercard.svg'
 import visa from '../assets/visa.svg'
 import american_express from '../assets/american-express.svg'
@@ -8,10 +8,10 @@ export default function Footer() {
     return (
         <footer className="p-4 bg-white  shadow md:px-6 md:py-8 dark:bg-gray-700">
             <div className="sm:flex sm:items-center sm:justify-between">
-                <a href="https://flowbite.com/" className="flex items-center mb-4 sm:mb-0">
-                    <img src={logo} className="mr-3 h-10" alt="Flowbite Logo"/>
+                <a href="/" className="flex items-center mb-4 sm:mb-0">
+                    <img src={logo} className="mr-3 h-14" alt="Inkwell Logo"/>
                     <span
-                        className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">Flowbite</span>
+                        className="self-center text-3xl font-semibold whitespace-nowrap dark:text-white">InkwellBooks</span>
                 </a>
                 <ul className="flex flex-wrap items-center mb-6 text-sm text-gray-500 sm:mb-0 dark:text-gray-400">
                     <li>
@@ -36,8 +36,8 @@ export default function Footer() {
                 <img src={american_express} className="h-10 mr-1" alt="American express logo"/>
                 <img src={discover} className="h-10 mr-1" alt="Discover logo"/>
             </div>
-            <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400 pt-2">© 2022 <a
-                href="https://flowbite.com/" className="hover:underline">Flowbite™</a>. All Rights Reserved.
+            <span className="block text-sm text-gray-500 sm:text-center dark:text-gray-400 pt-2">© {new Date().getFullYear()} <a
+                href="https://flowbite.com/" className="hover:underline">InkwellBooks™</a>. All Rights Reserved.
             </span>
 
         </footer>
