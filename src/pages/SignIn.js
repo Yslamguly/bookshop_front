@@ -2,13 +2,15 @@ import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
 import {useToken} from "../hooks/auth/useToken";
-import logo from '../assets/undraw_education_f8ru.svg'
+import logo from '../assets/inkwellBook.svg'
 import {useAuth} from "../hooks/UserContext";
+import ErrorMessage from "../components/ErrorMessage";
 
 export default function SignIn() {
-    const [isRememberMeChecked, setIsRememberMeChecked] = useState(false) //create a function that changes state and sets the global user to true
-    const [token, setToken] = useToken(isRememberMeChecked)
-    const [errorMessage, setErrorMessage] = useState(false)
+    const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
+    const [, setToken] = useToken(isRememberMeChecked)
+    const [errorMessage, setErrorMessage] = useState()
+    const [showError, setShowError] = useState(false)
     const [emailValue, setEmailValue] = useState('')
     const [passwordValue, setPasswordValue] = useState('')
     const navigate = useNavigate();
@@ -27,25 +29,22 @@ export default function SignIn() {
             setToken(token)
             setAuth(true)
             navigate("/books")
-            window.location.reload(true);
+            window.location.reload();
         } catch (e) {
-            setErrorMessage(true)
+            if (e.code === 'ERR_NETWORK') {
+                window.location.pathname = "/500"
+            }
+            setErrorMessage(e.response.data.message)
+            setShowError(true)
         }
     }
     return (
         <>
-            {errorMessage &&
-            <div className="bg-red-100 border border-red-400 text-red-700 px-4 py-3 rounded relative" role="alert">
-                <strong className="font-bold">Error! </strong>
-                <span className="block sm:inline">Invalid email or password.</span>
-                <span className="absolute top-0 bottom-0 right-0 px-4 py-3">
-            <svg className="fill-current h-6 w-6 text-red-500" role="button" xmlns="http://www.w3.org/2000/svg"
-                 onClick={() => setErrorMessage(false)}
-                 viewBox="0 0 20 20"><title>Close</title><path
-                d="M14.348 14.849a1.2 1.2 0 0 1-1.697 0L10 11.819l-2.651 3.029a1.2 1.2 0 1 1-1.697-1.697l2.758-3.15-2.759-3.152a1.2 1.2 0 1 1 1.697-1.697L10 8.183l2.651-3.031a1.2 1.2 0 1 1 1.697 1.697l-2.758 3.152 2.758 3.15a1.2 1.2 0 0 1 0 1.698z"/></svg>
-                </span>
-            </div>
-            }
+            <ErrorMessage showError={showError}
+                          setShowError={(bool) => setShowError(bool)}
+                          header={'Error'}
+                          description={errorMessage}/>
+
             <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="w-full max-w-md space-y-8">
                     <div>
@@ -121,7 +120,7 @@ export default function SignIn() {
                         <div>
                             <button
                                 onClick={onLoginClicked}
-                                // type={"submit"}
+                                type={"submit"}
                                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >
                 <span className="absolute inset-y-0 left-0 flex items-center pl-3">
