@@ -81,13 +81,13 @@ export default function NavBar() {
                                 {!auth ?
                                     <div
                                         className="absolute inset-y-0 right-0 flex items-center pr-2 sm:static sm:inset-auto sm:ml-6 sm:pr-0">
-                                        <button
-                                            type="button"
-                                            className="rounded-full mr-4  p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"
-                                        >
-                                            <span className="sr-only">View notifications</span>
-                                            <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" onClick={()=>setShowShoppingCart(true)}/>
-                                        </button>
+                                        {/*<button*/}
+                                        {/*    type="button"*/}
+                                        {/*    className="rounded-full mr-4  p-1 text-gray-200 hover:text-white focus:outline-none focus:ring-2 focus:ring-white focus:ring-offset-2 focus:ring-offset-gray-800"*/}
+                                        {/*>*/}
+                                        {/*    <span className="sr-only">View notifications</span>*/}
+                                        {/*    <ShoppingBagIcon className="h-6 w-6" aria-hidden="true" onClick={()=>setShowShoppingCart(true)}/>*/}
+                                        {/*</button>*/}
                                         <a href="/login" className="text-indigo-400 hover:text-indigo-500 pr-4">
                                             Sign in
                                         </a>
@@ -116,7 +116,7 @@ export default function NavBar() {
                                                     <span className="sr-only">Open user menu</span>
                                                     <img
                                                         className="h-8 w-8 rounded-full"
-                                                        src="https://images.unsplash.com/photo-1472099645785-5658abf4ff4e?ixlib=rb-1.2.1&ixid=eyJhcHBfaWQiOjEyMDd9&auto=format&fit=facearea&facepad=2&w=256&h=256&q=80"
+                                                        src="https://upload.wikimedia.org/wikipedia/commons/7/7c/Profile_avatar_placeholder_large.png?20150327203541"
                                                         alt=""
                                                     />
                                                 </Menu.Button>
