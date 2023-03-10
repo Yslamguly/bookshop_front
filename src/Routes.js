@@ -13,12 +13,18 @@ import {InternalServerError} from "./pages/500";
 import {PaymentSuccess} from "./pages/PaymentSuccess";
 import LandingPage from "./pages/LandingPage";
 import {BestSellers} from "./pages/BestSellers";
+import {VerifyEmail} from "./pages/VerifyEmail";
+import {useAuth} from "./hooks/UserContext";
+import {useUser} from "./hooks/auth/useUser";
+import {EmailVerificationLandingPage} from "./components/EmailVerificationLandingPage";
 
 
 export const Routess = () => {
     return (
         <Router>
             <NavBar/>
+            {/*{user? !user.isVerified && */}
+            {/*    <DangerAlert message={'You want be able to make changes until you verify your email!'} user={user}/>: null }*/}
             <Routes>
                 <Route path={"/"} element={<LandingPage/>}/>
                 <Route path={"/books"} element={<Books/>}/>
@@ -31,6 +37,8 @@ export const Routess = () => {
                 />
                 <Route path={"/login"} element={<SignIn/>}/>
                 <Route path={"/signup"} element={<SignUp/>}/>
+                <Route element={<EmailVerificationLandingPage/>} path="/verify-email/:verificationString"/>
+                <Route path={"/email-verification"} element={<VerifyEmail/>}/>
                 <Route path={"/checkout-success"} element={<PaymentSuccess/>}/>
                 <Route element={<BookDetails />} path="/books/:bookId"/>
                 <Route element={<InternalServerError/>} path={"/500"}/>

@@ -7,10 +7,10 @@ import {useAuth} from "../hooks/UserContext";
 
 
 export function SignUp() {
-    const [isRememberMeChecked, setIsRememberMeChecked] = useState(false) //create a function that changes state and sets the global user to true
-    const [token, setToken] = useToken(isRememberMeChecked)
+    const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
+    const [, setToken] = useToken(isRememberMeChecked)
     const [showErrorMessage, setShowErrorMessage] = useState(false)
-    const [errorMessage, setErrorMessage] = useState('')
+    const [, setErrorMessage] = useState('')
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [emailValue, setEmailValue] = useState('')
@@ -43,31 +43,16 @@ export function SignUp() {
                 confirm_password: confirmPasswordValue
             });
             const {token} = response.data
+            console.log(token)
             setToken(token)
             setAuth(true)
-            navigate("/books")
-            window.location.reload(true);
+            navigate("/email-verification")
+            // window.location.reload();
         }catch (e){
+            console.log(e)
             setShowErrorMessage(true)
             setErrorMessage('Password must be between 6-20 chars and contain uppercase and lowercase letters!')
         }
-        // await axios.post('http://localhost:8000/customers/register', {
-        //     first_name: firstName,
-        //     last_name: lastName,
-        //     email_address: emailValue,
-        //     phone_number: phoneNumber,
-        //     password: passwordValue,
-        //     confirm_password: confirmPasswordValue
-        // }).then((response) => {
-        //     const {token} = response.data
-        //     setToken(token)
-        //     setAuth(true)
-        //     navigate("/books")
-        //     window.location.reload(true);
-        // })
-        //     .catch(() => setShowErrorMessage(true))
-        //     .then(()=>setErrorMessage('Password must be between 6-20 chars and contain uppercase and lowercase letters!'))
-        //     // .catch(() => navigate('/signup'))
     }
     return (
         <>

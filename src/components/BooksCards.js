@@ -38,6 +38,7 @@ export const BooksCards = (props) => {
                 setLastlyAddedProduct(product)
                 setShowSuccess(true)
             }).catch((error) => {
+                console.log(error)
             if (error.response.status === 401) {
                 logout()
                 setAuth(false)

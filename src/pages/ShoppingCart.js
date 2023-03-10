@@ -1,4 +1,4 @@
-import {Fragment, useEffect, useState} from 'react'
+import {Fragment, useCallback, useEffect, useState} from 'react'
 import {Dialog, Transition} from '@headlessui/react'
 import {XMarkIcon} from '@heroicons/react/24/outline'
 import axios from "axios";
@@ -7,59 +7,52 @@ import {useAuth} from "../hooks/UserContext";
 import {logout} from "../hooks/auth/logout";
 import empty_cart from "../assets/empty_cart.svg";
 import ErrorMessage from "../components/ErrorMessage";
-import {cart_items} from "../components/NonAuthShoppingCart";
 
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
     const [showError, setShowError] = useState(false)
     const {userId} = useAuth()
-    const {rememberMe, setAuth} = useAuth()
+    const {rememberMe, setAuth,auth} = useAuth()
     const [token] = useToken(rememberMe)
-     function  fetchAuthShoppingCart() {
+    const fetchAuthShoppingCart = useCallback(() => {
         axios.get(`http://localhost:8000/shopping_cart/${userId}`, {
             headers: {authorization: `Bearer ${token}`}
         }).then((response) => {
             const allBooks = response.data
             setBooks(allBooks)
         })
-            .catch(error => {
-                if (error.response.status === 401) {
-                    logout()
-                    setAuth(false)
-                    window.location.pathname = "/401"
-                }
-                if (error.response.status === 500) {
-                    window.location.pathname = "/500"
-                }
-            })
-    }
+        .catch(error => {
+            if (error.response.status === 401) {
+                logout()
+                setAuth(false)
+                window.location.pathname = "/401"
+            }
+            if (error.response.status === 500) {
+                window.location.pathname = "/500"
+            }
+        })
+    },[userId])
     useEffect(() => {
         if (userId) {
             fetchAuthShoppingCart()
         }
-    }, [books,userId])
+    }, [userId])
     const onRemoveClick = (bookId) => {
-        if (!userId) {
-            setBooks(cart_items.filter(book => book.id !== bookId))
-            console.log(books)
-            // setBooks(books.filter(book=>book.id!==bookId))
-        } else {
-            axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
-                data: {shopping_cart_item_book_id: bookId},
-                headers: {authorization: `Bearer ${token}`}
-            }).then((response) => {
-                console.log(response)
-            }).catch((error) => {
-                if (error.response.status === 401) {
-                    logout()
-                    setAuth(false)
-                    // window.location.pathname = "/401"
-                } else {
-                    setShowError(true)
-                    console.error(error)
-                }
-            })
-        }
+        axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
+            data: {shopping_cart_item_book_id: bookId},
+            headers: {authorization: `Bearer ${token}`}
+        }).then((response) => {
+            console.log(response)
+        }).catch((error) => {
+            if (error.response.status === 401) {
+                logout()
+                setAuth(false)
+                // window.location.pathname = "/401"
+            } else {
+                setShowError(true)
+                console.error(error)
+            }
+        })
     }
     const onQuantityChange = (quantity, bookId, price) => {
         axios.patch(`http://localhost:8000/shopping_cart/updateQuantity/${userId}`, {

@@ -11,7 +11,6 @@ import ErrorMessage from "./ErrorMessage";
 import {addBookToShoppingCart} from "../utils/functions";
 import AddedBookNotification from "./AddedBookNotification";
 
-//TODO fix Jane Austin as an author name
 export const BooksGrid = (props) => {
     const [token] = useToken()
     const {userId, setAuth} = useAuth()

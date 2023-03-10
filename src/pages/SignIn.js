@@ -32,7 +32,7 @@ export default function SignIn() {
             window.location.reload();
         } catch (e) {
             if (e.code === 'ERR_NETWORK') {
-                window.location.pathname = "/500"
+                navigate("/500")
             }
             setErrorMessage(e.response.data.message)
             setShowError(true)
@@ -120,6 +120,7 @@ export default function SignIn() {
                         <div>
                             <button
                                 onClick={onLoginClicked}
+
                                 type={"submit"}
                                 className="group relative flex w-full justify-center rounded-md border border-transparent bg-indigo-600 py-2 px-4 text-sm font-medium text-white hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-indigo-500 focus:ring-offset-2"
                             >

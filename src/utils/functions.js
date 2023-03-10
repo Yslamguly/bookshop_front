@@ -22,7 +22,6 @@ export async function getBooksDescription(book){
 }
 export async function trimStringsInArray(arr,trimFrom,trimTo){
     for (let i = 0; i < arr.length; i++) {
-        console.log(arr[i])
         arr[i] = arr[i].substring(trimFrom, trimTo);
     }
 }
