@@ -11,37 +11,41 @@ import ErrorMessage from "../components/ErrorMessage";
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
     const [showError, setShowError] = useState(false)
+    const [lastDeletedBook,setLastDeletedBook] = useState()
     const {userId} = useAuth()
-    const {rememberMe, setAuth,auth} = useAuth()
+    const {rememberMe, setAuth} = useAuth()
     const [token] = useToken(rememberMe)
-    const fetchAuthShoppingCart = useCallback(() => {
-        axios.get(`http://localhost:8000/shopping_cart/${userId}`, {
-            headers: {authorization: `Bearer ${token}`}
-        }).then((response) => {
-            const allBooks = response.data
-            setBooks(allBooks)
-        })
-        .catch(error => {
-            if (error.response.status === 401) {
-                logout()
-                setAuth(false)
-                window.location.pathname = "/401"
-            }
-            if (error.response.status === 500) {
-                window.location.pathname = "/500"
-            }
-        })
-    },[userId])
     useEffect(() => {
+
+        const fetchAuthShoppingCart = () => {
+            axios.get(`http://localhost:8000/shopping_cart/${userId}`, {
+                headers: {authorization: `Bearer ${token}`}
+            }).then((response) => {
+                const allBooks = response.data
+                setBooks(allBooks)
+            })
+                .catch(error => {
+                    if (error.response.status === 401) {
+                        logout()
+                        setAuth(false)
+                        window.location.pathname = "/401"
+                    }
+                    if (error.response.status === 500) {
+                        window.location.pathname = "/500"
+                    }
+                })
+        }
         if (userId) {
             fetchAuthShoppingCart()
         }
-    }, [userId])
-    const onRemoveClick = (bookId) => {
+    }, [props.showShoppingCart,lastDeletedBook])
+    const onRemoveClick = (bookId,index) => {
         axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
             data: {shopping_cart_item_book_id: bookId},
             headers: {authorization: `Bearer ${token}`}
         }).then((response) => {
+            setLastDeletedBook(index)
+            setBooks(books.splice(index,1))
             console.log(response)
         }).catch((error) => {
             if (error.response.status === 401) {
@@ -149,7 +153,7 @@ export const ShoppingCart = (props) => {
                                                     <div className="mt-8">
                                                         <div className="flow-root">
                                                             <ul className="-my-6 divide-y divide-gray-200">
-                                                                { books.map((product) => (
+                                                                { books.map((product,index) => (
 
                                                                     <li key={product.id} className="flex py-6">
                                                                         <div
@@ -187,7 +191,7 @@ export const ShoppingCart = (props) => {
                                                                                 </div>
                                                                                 <div className="flex">
                                                                                     <button
-                                                                                        onClick={() => onRemoveClick(product.id)}
+                                                                                        onClick={() => onRemoveClick(product.id,index)}
                                                                                         type="button"
                                                                                         className="font-medium text-indigo-600 hover:text-indigo-500"
                                                                                     >
