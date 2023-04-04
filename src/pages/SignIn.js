@@ -14,28 +14,28 @@ export default function SignIn() {
     const [showError, setShowError] = useState(false)
     const [emailValue, setEmailValue] = useState('')
     const [passwordValue, setPasswordValue] = useState('')
-    const [googleOauthUrl , setGoogleOauthUrl] = useState()
-    const {token:oauthToken} = useQueryParams()
+    const [googleOauthUrl, setGoogleOauthUrl] = useState()
+    const {token: oauthToken} = useQueryParams()
     const navigate = useNavigate();
     const {setAuth, setRememberMe, rememberMe} = useAuth();
 
-    useEffect(()=>{
-        if(oauthToken){
+    useEffect(() => {
+        if (oauthToken) {
             setToken(oauthToken);
             setAuth(true)
             navigate("/books")
             window.location.reload();
         }
-    },[oauthToken,setToken,navigate])
+    }, [oauthToken, setToken, navigate])
 
-    useEffect(()=>{
+    useEffect(() => {
         axios.get('http://localhost:8000/auth/google/url')
-            .then((response)=>{
+            .then((response) => {
                 const {url} = response.data
                 setGoogleOauthUrl(url)
             })
-            .catch((e)=>console.error(e))
-    },[])
+            .catch((e) => console.error(e))
+    }, [])
 
     const onRememberMeClicked = () => {
         setRememberMe(!rememberMe)
@@ -158,7 +158,9 @@ export default function SignIn() {
                             </div>
                             <button type="button"
                                     disabled={!googleOauthUrl}
-                                    onClick={()=>{window.location.href = googleOauthUrl}}
+                                    onClick={() => {
+                                        window.location.href = googleOauthUrl
+                                    }}
                                     className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2">
                                 <svg className="w-4 h-4 mr-2 -ml-1" aria-hidden="true" focusable="false"
                                      data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg"
