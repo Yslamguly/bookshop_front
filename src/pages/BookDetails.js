@@ -5,6 +5,7 @@ import {Skeleton} from "../components/Skeleton";
 import {useToken} from "../hooks/auth/useToken";
 import {useAuth} from "../hooks/UserContext";
 import {logout} from "../hooks/auth/logout";
+import ErrorMessage from "../components/ErrorMessage";
 // import {cart_items} from "../components/NonAuthShoppingCart";
 
 export const BookDetails = () => {
@@ -13,6 +14,8 @@ export const BookDetails = () => {
     const [book, setBook] = useState()
     const [bookDescription, setBookDescription] = useState()
     const [active, setActive] = useState(false)
+    const [showError, setShowError] = useState(false)
+    const [errorMessage,setErrorMessage] = useState('')
     const [token] = useToken()
     const {userId, setAuth} = useAuth()
     useEffect(() => {
@@ -42,7 +45,7 @@ export const BookDetails = () => {
         }, {
             headers: {authorization: `Bearer ${token}`}
         })
-        .then((response) => {
+        .then(() => {
             setActive(true)
             setTimeout(() => {
                 setActive(false)
@@ -52,9 +55,16 @@ export const BookDetails = () => {
             if (error.response.status === 401) {
                 logout()
                 setAuth(false)
-                window.location.pathname = "/401"
-            } else {
-                console.error(error)
+                setShowError(true)
+                setErrorMessage('Please, login to perform the operation')
+            }
+            if(error.response.status===409){
+                setShowError(true)
+                setErrorMessage('It looks like you already have this book in your cart.')
+            }
+            else {
+                // console.error(error)
+                window.location.pathname = "/501"
             }
         })
     }
@@ -63,6 +73,12 @@ export const BookDetails = () => {
     if (book) {
         return (
             <section className="text-gray-700 body-font overflow-hidden bg-white">
+                <ErrorMessage
+                    showError={showError}
+                    setShowError={(bool) => setShowError(bool)}
+                    header={'Error'}
+                    description={errorMessage}
+                />
                 <div className=" px-5 py-24 mx-auto">
                     <div className="lg:w-4/5 mx-auto flex flex-wrap">
                         <img alt="book"

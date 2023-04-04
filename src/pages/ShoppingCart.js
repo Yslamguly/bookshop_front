@@ -1,4 +1,4 @@
-import {Fragment, useCallback, useEffect, useState} from 'react'
+import {Fragment, useEffect, useState} from 'react'
 import {Dialog, Transition} from '@headlessui/react'
 import {XMarkIcon} from '@heroicons/react/24/outline'
 import axios from "axios";
@@ -11,6 +11,7 @@ import ErrorMessage from "../components/ErrorMessage";
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
     const [showError, setShowError] = useState(false)
+    const [errorMessage,setErrorMessage] = useState('')
     const [lastDeletedBook,setLastDeletedBook] = useState()
     const {userId} = useAuth()
     const {rememberMe, setAuth} = useAuth()
@@ -28,7 +29,8 @@ export const ShoppingCart = (props) => {
                     if (error.response.status === 401) {
                         logout()
                         setAuth(false)
-                        window.location.pathname = "/401"
+                        setShowError(true)
+                        setErrorMessage('Please, login to perform the operation')
                     }
                     if (error.response.status === 500) {
                         window.location.pathname = "/500"
@@ -38,19 +40,21 @@ export const ShoppingCart = (props) => {
         if (userId) {
             fetchAuthShoppingCart()
         }
-    }, [props.showShoppingCart,lastDeletedBook])
+    }, [props.showShoppingCart, lastDeletedBook, userId, token, setAuth])
     const onRemoveClick = (bookId,index) => {
         axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
             data: {shopping_cart_item_book_id: bookId},
             headers: {authorization: `Bearer ${token}`}
         }).then((response) => {
             setLastDeletedBook(index)
-            setBooks(books.splice(index,1))
+            // setBooks(books.splice(index,1))
             console.log(response)
         }).catch((error) => {
             if (error.response.status === 401) {
                 logout()
                 setAuth(false)
+                setShowError(true)
+                setErrorMessage('Please, login to perform the operation')
                 // window.location.pathname = "/401"
             } else {
                 setShowError(true)
@@ -71,6 +75,8 @@ export const ShoppingCart = (props) => {
             if (error.response.status === 401) {
                 logout()
                 setAuth(false)
+                setShowError(true)
+                setErrorMessage('Please, login to perform the operation')
                 // window.location.pathname = "/401"
             } else {
                 window.location.pathname = "/500"
@@ -103,7 +109,7 @@ export const ShoppingCart = (props) => {
                 showError={showError}
                 setShowError={(bool) => setShowError(bool)}
                 header={'Error'}
-                description={'Error happened, please try again.'}
+                description={errorMessage}
             />
             {/*<SessionExpiredBanner/>*/}
             <Transition.Root show={props.showShoppingCart} as={Fragment}>
