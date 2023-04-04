@@ -5,6 +5,7 @@ import {useToken} from "../hooks/auth/useToken";
 import logo from '../assets/inkwellBook.svg'
 import {useAuth} from "../hooks/UserContext";
 import ErrorMessage from "../components/ErrorMessage";
+import {useQueryParams} from "../utils/useQueryParams";
 
 export default function SignIn() {
     const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
@@ -14,9 +15,18 @@ export default function SignIn() {
     const [emailValue, setEmailValue] = useState('')
     const [passwordValue, setPasswordValue] = useState('')
     const [googleOauthUrl , setGoogleOauthUrl] = useState()
-
+    const {token:oauthToken} = useQueryParams()
     const navigate = useNavigate();
     const {setAuth, setRememberMe, rememberMe} = useAuth();
+
+    useEffect(()=>{
+        if(oauthToken){
+            setToken(oauthToken);
+            setAuth(true)
+            navigate("/books")
+            window.location.reload();
+        }
+    },[oauthToken,setToken,navigate])
 
     useEffect(()=>{
         axios.get('http://localhost:8000/auth/google/url')
