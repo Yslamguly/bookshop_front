@@ -17,9 +17,11 @@ import {VerifyEmail} from "./pages/VerifyEmail";
 import {useAuth} from "./hooks/UserContext";
 import {useUser} from "./hooks/auth/useUser";
 import {EmailVerificationLandingPage} from "./components/EmailVerificationLandingPage";
+import {ForgotPassword} from "./pages/ForgotPassword";
+import {PasswordResetLandingPage} from "./pages/PasswordResetLandingPage";
 
 
-export const Routess = () => {
+export const RoutesController = () => {
     return (
         <Router>
             <NavBar/>
@@ -39,6 +41,8 @@ export const Routess = () => {
                 <Route path={"/signup"} element={<SignUp/>}/>
                 <Route element={<EmailVerificationLandingPage/>} path="/verify-email/:verificationString"/>
                 <Route path={"/email-verification"} element={<VerifyEmail/>}/>
+                <Route path={"/forgot-password"} element={<ForgotPassword/>}/>
+                <Route path={"/reset-password/:passwordResetCode"} element={<PasswordResetLandingPage/>}/>
                 <Route path={"/checkout-success"} element={<PaymentSuccess/>}/>
                 <Route element={<BookDetails />} path="/books/:bookId"/>
                 <Route element={<InternalServerError/>} path={"/500"}/>
