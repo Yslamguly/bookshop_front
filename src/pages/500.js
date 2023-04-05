@@ -1,7 +1,11 @@
 import {Link} from "react-router-dom";
 import {ArrowRightIcon} from "@heroicons/react/24/solid";
+import {useEffect} from "react";
 
 export function InternalServerError() {
+    useEffect(()=>{
+        document.title='Server Error';
+    },[])
     return (
         <section className="bg-white dark:bg-gray-900">
             <div className="py-8 px-4 mx-auto max-w-screen-xl lg:py-16 lg:px-6">
