@@ -1,82 +1,70 @@
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
 import axios from "axios";
-import {useToken} from "../hooks/auth/useToken";
-import logo from '../assets/undraw_education_f8ru.svg'
-import {useAuth} from "../hooks/UserContext";
+import {useToken} from "../../hooks/auth/useToken";
+import logo from '../../assets/undraw_education_f8ru.svg'
+import {useAuth} from "../../hooks/UserContext";
+import ErrorMessage from "../../components/ErrorMessage";
 
 
 export function SignUp() {
     const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
     const [, setToken] = useToken(isRememberMeChecked)
-    const [showErrorMessage, setShowErrorMessage] = useState(false)
-    const [, setErrorMessage] = useState('')
+    const [showError, setShowError] = useState(false)
+    const [errorMessage, setErrorMessage] = useState('')
     const [firstName, setFirstName] = useState('');
     const [lastName, setLastName] = useState('');
     const [emailValue, setEmailValue] = useState('')
     const [passwordValue, setPasswordValue] = useState('')
     const [confirmPasswordValue, setConfirmPasswordValue] = useState('')
-    const [phoneNumber, setPhoneNumber] = useState('')
+    const [phoneNumber, setPhoneNumber] = useState(null)
     const navigate = useNavigate();
     const {setAuth, setRememberMe, rememberMe} = useAuth();
 
-    function areInputsEmpty(){
-        return !lastName||!firstName||!emailValue|| !passwordValue || passwordValue!==confirmPasswordValue
+    function areInputsEmpty() {
+        return !lastName || !firstName || !emailValue || !passwordValue || !confirmPasswordValue
     }
+
     const onRememberMeClicked = () => {
         setRememberMe(!rememberMe)
         setIsRememberMeChecked(!rememberMe)
     }
     const onCreateButtonClick = async () => {
-        if(areInputsEmpty()){
-            setErrorMessage('Please fill in all the fields!')
-            setShowErrorMessage(true)
+        if (areInputsEmpty()) {
+            setErrorMessage('Please fill in the required fields!')
+            setShowError(true)
             return
         }
-        try{
-            const response = await axios.post(`http://localhost:8000/customers/register`,{
-                first_name: firstName,
-                last_name: lastName,
-                email_address: emailValue,
-                phone_number: phoneNumber,
-                password: passwordValue,
-                confirm_password: confirmPasswordValue
-            });
+        await axios.post(`http://localhost:8000/customers/register`, {
+            first_name: firstName,
+            last_name: lastName,
+            email_address: emailValue,
+            phone_number: phoneNumber,
+            password: passwordValue,
+            confirm_password: confirmPasswordValue
+        }).then((response) => {
             const {token} = response.data
             console.log(token)
             setToken(token)
             setAuth(true)
             navigate("/email-verification")
-            // window.location.reload();
-        }catch (e){
-            console.log(e)
-            setShowErrorMessage(true)
-            setErrorMessage('Password must be between 6-20 chars and contain uppercase and lowercase letters!')
-        }
+            window.location.reload();
+        })
+            .catch((e) => {
+                    const message = e.response.data
+                    setErrorMessage(Object.values(message)[0]);
+                    setShowError(true)
+                    console.error(e)
+
+                }
+            )
     }
     return (
         <>
-            {showErrorMessage &&
-            <div className="flex p-4 mb-4 text-sm text-red-700 bg-red-100 rounded-lg dark:bg-red-200 dark:text-red-800"
-                 role="alert">
-                <svg aria-hidden="true" className="flex-shrink-0 inline w-5 h-5 mr-3" fill="currentColor"
-                     viewBox="0 0 20 20" xmlns="http://www.w3.org/2000/svg">
-                    <path fillRule="evenodd"
-                          d="M18 10a8 8 0 11-16 0 8 8 0 0116 0zm-7-4a1 1 0 11-2 0 1 1 0 012 0zM9 9a1 1 0 000 2v3a1 1 0 001 1h1a1 1 0 100-2v-3a1 1 0 00-1-1H9z"
-                          clipRule="evenodd"/>
-                </svg>
-                <span className="sr-only">Danger</span>
-                <div>
-                    <span className="font-medium">Ensure that these requirements are met:</span>
-                    <ul className="mt-1.5 ml-4 text-red-700 list-disc list-inside">
-                        <li>The password should be between 6 to 20 characters</li>
-                        <li>At least one lowercase character and an uppercase character</li>
-                        <li>Inclusion of at least one numeric digit</li>
-                        <li>Phone number must be between 9 and 11 digits</li>
-                    </ul>
-                </div>
-            </div>
-            }
+            <ErrorMessage showError={showError}
+                          setShowError={(bool) => setShowError(bool)}
+                          header={'Error'}
+                          description={errorMessage}/>
             <div className="flex min-h-full items-center justify-center py-12 px-4 sm:px-6 lg:px-8">
                 <div className="w-full max-w-md space-y-8">
                     <div>
