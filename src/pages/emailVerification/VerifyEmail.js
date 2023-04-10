@@ -1,4 +1,4 @@
-import {DangerAlert} from "../components/DangerAlert";
+import {DangerAlert} from "../../components/DangerAlert";
 
 export const VerifyEmail = () =>{
 

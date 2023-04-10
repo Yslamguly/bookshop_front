@@ -2,7 +2,7 @@ import {useState} from "react";
 import {useParams} from "react-router-dom";
 import {PasswordResetSuccess} from "./PasswordResetSuccess";
 import axios from "axios";
-import ErrorMessage from "../components/ErrorMessage";
+import ErrorMessage from "../../components/ErrorMessage";
 
 export const PasswordResetLandingPage = () => {
     const [errorMessage, setErrorMessage] = useState('')

@@ -1,6 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
-import ErrorMessage from "../components/ErrorMessage";
+import ErrorMessage from "../../components/ErrorMessage";
 import axios from "axios";
 
 export const ForgotPassword = () =>{

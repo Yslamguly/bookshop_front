@@ -3,8 +3,8 @@ import {useParams} from "react-router-dom";
 import axios from "axios";
 import {useToken} from "../hooks/auth/useToken";
 import {Skeleton} from "./Skeleton";
-import {EmailVerificationFail} from "../pages/EmailVerificationFail";
-import {EmailVerificationSuccess} from "../pages/EmailVerificationSuccess";
+import {EmailVerificationFail} from "../pages/emailVerification/EmailVerificationFail";
+import {EmailVerificationSuccess} from "../pages/emailVerification/EmailVerificationSuccess";
 import {useAuth} from "../hooks/UserContext";
 export const EmailVerificationLandingPage = () =>{
     const [isLoading,setIsLoading] = useState(true)
