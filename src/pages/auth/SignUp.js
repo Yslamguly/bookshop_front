@@ -1,10 +1,11 @@
 import {useNavigate} from "react-router-dom";
-import {useState} from "react";
+import {useEffect, useState} from "react";
 import axios from "axios";
 import {useToken} from "../../hooks/auth/useToken";
 import logo from '../../assets/undraw_education_f8ru.svg'
 import {useAuth} from "../../hooks/UserContext";
 import ErrorMessage from "../../components/ErrorMessage";
+import {useQueryParams} from "../../utils/useQueryParams";
 
 
 export function SignUp() {
@@ -18,8 +19,28 @@ export function SignUp() {
     const [passwordValue, setPasswordValue] = useState('')
     const [confirmPasswordValue, setConfirmPasswordValue] = useState('')
     const [phoneNumber, setPhoneNumber] = useState(null)
+    const [googleOauthUrl, setGoogleOauthUrl] = useState()
+    const {token: oauthToken} = useQueryParams()
     const navigate = useNavigate();
     const {setAuth, setRememberMe, rememberMe} = useAuth();
+
+    useEffect(() => {
+        if (oauthToken) {
+            setToken(oauthToken);
+            setAuth(true)
+            navigate("/books")
+            window.location.reload();
+        }
+    }, [oauthToken, setToken, navigate])
+
+    useEffect(() => {
+        axios.get('http://localhost:8000/auth/google/url')
+            .then((response) => {
+                const {url} = response.data
+                setGoogleOauthUrl(url)
+            })
+            .catch((e) => console.error(e))
+    }, [])
 
     function areInputsEmpty() {
         return !lastName || !firstName || !emailValue || !passwordValue || !confirmPasswordValue
@@ -33,31 +54,32 @@ export function SignUp() {
         if (areInputsEmpty()) {
             setErrorMessage('Please fill in the required fields!')
             setShowError(true)
-            return
-        }
-        await axios.post(`http://localhost:8000/customers/register`, {
-            first_name: firstName,
-            last_name: lastName,
-            email_address: emailValue,
-            phone_number: phoneNumber,
-            password: passwordValue,
-            confirm_password: confirmPasswordValue
-        }).then((response) => {
-            const {token} = response.data
-            console.log(token)
-            setToken(token)
-            setAuth(true)
-            navigate("/email-verification")
-            window.location.reload();
-        })
-            .catch((e) => {
-                    const message = e.response.data
-                    setErrorMessage(Object.values(message)[0]);
-                    setShowError(true)
-                    console.error(e)
+        } else {
+            await axios.post(`http://localhost:8000/customers/register`, {
+                first_name: firstName,
+                last_name: lastName,
+                email_address: emailValue,
+                phone_number: phoneNumber,
+                password: passwordValue,
+                confirm_password: confirmPasswordValue
+            }).then((response) => {
+                const {token} = response.data
+                console.log(token)
+                setToken(token)
+                setAuth(true)
+                navigate("/email-verification")
+                window.location.reload();
+            })
+                .catch((e) => {
+                        const message = e.response.data
+                        setErrorMessage(Object.values(message)[0]);
+                        setShowError(true)
+                        console.error(e)
 
-                }
-            )
+                    }
+                )
+        }
+
     }
     return (
         <>
@@ -76,7 +98,6 @@ export function SignUp() {
                         <h2 className="mt-6 text-center text-3xl font-bold tracking-tight text-gray-900">
                             Create an Account
                         </h2>
-                        {/*<p className="mt-2 text-center text-sm text-gray-600">afae</p>*/}
                     </div>
                     <div className="mt-8 space-y-6">
                         <input type="hidden" name="remember" defaultValue="true"/>
@@ -132,7 +153,6 @@ export function SignUp() {
                                     id="phone-number"
                                     name="phone-number"
                                     type="number"
-                                    required
                                     className="relative block w-full appearance-none rounded-none  border border-gray-300 px-3 py-2 text-gray-900 placeholder-gray-500 focus:z-10 focus:border-indigo-500 focus:outline-none focus:ring-indigo-500 sm:text-sm"
                                     placeholder="Phone number"
                                     onChange={(e) => setPhoneNumber(e.target.value)}
@@ -200,6 +220,27 @@ export function SignUp() {
                 </span>Create
                             </button>
                         </div>
+                        <div
+                            className="my-4 flex items-center before:mt-0.5 before:flex-1 before:border-t before:border-neutral-300 after:mt-0.5 after:flex-1 after:border-t after:border-neutral-300">
+                            <p
+                                className="mx-4 mb-0 text-center font-semibold dark:text-neutral-700">
+                                OR
+                            </p>
+                        </div>
+                        <button type="button"
+                                disabled={!googleOauthUrl}
+                                onClick={() => {
+                                    window.location.href = googleOauthUrl
+                                }}
+                                className="text-white bg-[#4285F4] hover:bg-[#4285F4]/90 focus:ring-4 focus:outline-none focus:ring-[#4285F4]/50 font-medium rounded-lg text-sm px-5 py-2.5 text-center inline-flex items-center dark:focus:ring-[#4285F4]/55 mr-2 mb-2">
+                            <svg className="w-4 h-4 mr-2 -ml-1" aria-hidden="true" focusable="false"
+                                 data-prefix="fab" data-icon="google" role="img" xmlns="http://www.w3.org/2000/svg"
+                                 viewBox="0 0 488 512">
+                                <path fill="currentColor"
+                                      d="M488 261.8C488 403.3 391.1 504 248 504 110.8 504 0 393.2 0 256S110.8 8 248 8c66.8 0 123 24.5 166.3 64.9l-67.5 64.9C258.5 52.6 94.3 116.6 94.3 256c0 86.5 69.1 156.6 153.7 156.6 98.2 0 135-70.4 140.8-106.9H248v-85.3h236.1c2.3 12.7 3.9 24.9 3.9 41.4z"></path>
+                            </svg>
+                            Create account with Google
+                        </button>
                     </div>
                     <p className="mt-2 text-center text-sm text-gray-600">
                         By creating an account, you agree to Bookshop’s <a className={'text-indigo-600'} href={'#'}>Privacy
