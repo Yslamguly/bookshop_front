@@ -1,11 +1,11 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
 import axios from "axios";
-import {useToken} from "../hooks/auth/useToken";
-import logo from '../assets/inkwellBook.svg'
-import {useAuth} from "../hooks/UserContext";
-import ErrorMessage from "../components/ErrorMessage";
-import {useQueryParams} from "../utils/useQueryParams";
+import {useToken} from "../../hooks/auth/useToken";
+import logo from '../../assets/inkwellBook.svg'
+import {useAuth} from "../../hooks/UserContext";
+import ErrorMessage from "../../components/ErrorMessage";
+import {useQueryParams} from "../../utils/useQueryParams";
 
 export default function SignIn() {
     const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
