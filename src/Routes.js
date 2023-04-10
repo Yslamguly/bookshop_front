@@ -1,32 +1,28 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
 import { UserInfoPage } from './pages/UserInfoPage';
 import {PrivateRoute} from "./hooks/auth/PrivateRoutes";
-import SignIn from "./pages/SignIn";
-import {SignUp} from "./pages/SignUp";
+import SignIn from "./pages/auth/SignIn";
+import {SignUp} from "./pages/auth/SignUp";
 import Books from "./pages/Books";
 import NavBar from "./components/NavBar";
 import Footer from "./components/Footer";
-import {PageNotFound} from "./pages/PageNotFound";
+import {PageNotFound} from "./pages/errors/PageNotFound";
 import {BookDetails} from "./pages/BookDetails";
-import {UnauthorizedPage} from "./pages/401";
-import {InternalServerError} from "./pages/500";
-import {PaymentSuccess} from "./pages/PaymentSuccess";
+import {UnauthorizedPage} from "./pages/errors/401";
+import {InternalServerError} from "./pages/errors/500";
+import {PaymentSuccess} from "./pages/stripePayment/PaymentSuccess";
 import LandingPage from "./pages/LandingPage";
 import {BestSellers} from "./pages/BestSellers";
-import {VerifyEmail} from "./pages/VerifyEmail";
-import {useAuth} from "./hooks/UserContext";
-import {useUser} from "./hooks/auth/useUser";
+import {VerifyEmail} from "./pages/emailVerification/VerifyEmail";
 import {EmailVerificationLandingPage} from "./components/EmailVerificationLandingPage";
-import {ForgotPassword} from "./pages/ForgotPassword";
-import {PasswordResetLandingPage} from "./pages/PasswordResetLandingPage";
+import {ForgotPassword} from "./pages/passwordReset/ForgotPassword";
+import {PasswordResetLandingPage} from "./pages/passwordReset/PasswordResetLandingPage";
 
 
 export const RoutesController = () => {
     return (
         <Router>
             <NavBar/>
-            {/*{user? !user.isVerified && */}
-            {/*    <DangerAlert message={'You want be able to make changes until you verify your email!'} user={user}/>: null }*/}
             <Routes>
                 <Route path={"/"} element={<LandingPage/>}/>
                 <Route path={"/books"} element={<Books/>}/>
