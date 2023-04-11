@@ -42,9 +42,8 @@ export function SignUp() {
             .catch((e) => console.error(e))
     }, [])
 
-    function areInputsEmpty() {
-        return !lastName || !firstName || !emailValue || !passwordValue || !confirmPasswordValue
-    }
+    const areInputsEmpty = () => !lastName || !firstName || !emailValue || !passwordValue || !confirmPasswordValue
+
 
     const onRememberMeClicked = () => {
         setRememberMe(!rememberMe)
