@@ -43,7 +43,7 @@ export const BookDetails = () => {
             book_id: book.id,
             price: book.selling_price
         }, {
-            headers: {authorization: `Bearer ${token}`}
+            headers: {Authorization: `Bearer ${token}`}
         })
         .then(() => {
             setActive(true)
@@ -58,13 +58,12 @@ export const BookDetails = () => {
                 setShowError(true)
                 setErrorMessage('Please, login to perform the operation')
             }
-            if(error.response.status===409){
+            else if(error.response.status===409){
                 setShowError(true)
                 setErrorMessage('It looks like you already have this book in your cart.')
             }
             else {
-                // console.error(error)
-                window.location.pathname = "/501"
+                window.location.pathname = "/500"
             }
         })
     }
