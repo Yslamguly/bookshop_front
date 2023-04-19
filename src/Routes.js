@@ -17,6 +17,7 @@ import {VerifyEmail} from "./pages/emailVerification/VerifyEmail";
 import {EmailVerificationLandingPage} from "./components/EmailVerificationLandingPage";
 import {ForgotPassword} from "./pages/passwordReset/ForgotPassword";
 import {PasswordResetLandingPage} from "./pages/passwordReset/PasswordResetLandingPage";
+import UserProfile from "./pages/UserProfile";
 
 
 export const RoutesController = () => {
@@ -27,12 +28,13 @@ export const RoutesController = () => {
                 <Route path={"/"} element={<LandingPage/>}/>
                 <Route path={"/books"} element={<Books/>}/>
                 <Route path={"/bestSellers"} element={<BestSellers/>}/>
-                <Route path="/user_info"
+                <Route path="/profile"
                     element={
                         <PrivateRoute>
-                            <UserInfoPage/>
+                            <UserProfile/>
                         </PrivateRoute>}
                 />
+                {/*<Route path={'/profile'} element={<UserProfile/>}/>*/}
                 <Route path={"/login"} element={<SignIn/>}/>
                 <Route path={"/signup"} element={<SignUp/>}/>
                 <Route element={<EmailVerificationLandingPage/>} path="/verify-email/:verificationString"/>
