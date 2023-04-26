@@ -4,10 +4,6 @@ import {
     ScaleIcon,
 } from '@heroicons/react/20/solid'
 
-function classNames(...classes) {
-    return classes.filter(Boolean).join(' ')
-}
-
 export default function PurchasedItem(props) {
     const {
         first_name,
@@ -21,7 +17,7 @@ export default function PurchasedItem(props) {
         <div className="lg:flex lg:items-center lg:justify-between">
             <div className="min-w-0 flex-1 ">
                 <>
-                    <h2 className="text-2xl font-bold leading-7 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
+                    <h2 className="text-2xl font-bold leading-7 w-96 text-gray-900 sm:truncate sm:text-3xl sm:tracking-tight">
                         {title}
                     </h2>
                     <h4 className="text-sm  leading-7 text-gray-900 sm:truncate sm:text-sm sm:tracking-tight">
