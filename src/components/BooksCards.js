@@ -71,24 +71,6 @@ export const BooksCards = (props) => {
                     header={'Error'}
                     description={errorMessage}
                 />
-                <div
-                    className="py-20 flex flex-row rounded w-full bg-gradient-to-r from-indigo-400 via-violet-900 to-indigo-500">
-                    <div className="container mx-auto px-6">
-                        <h2 className="text-4xl font-bold mb-2 text-white">
-                            Best Selling Books
-                        </h2>
-                        <h3 className="text-2xl mb-8 text-gray-200">
-                            Here are the best selling books of the shop!
-                        </h3>
-                    </div>
-                    <img className="-mb-12 pr-5 w-40 lg:w-56"
-                         src={book_lover_icon} alt={"book_lover_illustration"}/>
-
-                </div>
-                {/*<div className="bg-gray-50 w-full flex flex-col lg:flex-row lg:items-center justify-between px-4 lg:pl-8 lg:pr-24 py-6">*/}
-                {/*    <h1 className="text-transparent bg-clip-text bg-gradient-to-r to-emerald-600 from-sky-400 font-bold text-3xl lg:text-4xl text-secondary">Best Selling Books</h1>*/}
-                {/*    <img className="-mb-12 w-40 lg:w-56" src="https://images-production.bookshop.org/spree/taxons/banner_images/10919/original/flame-books.png?1579979383"/>*/}
-                {/*</div>*/}
                 {props.books.map((book, i) => (
                     <div className="flex flex-col border-b-[1px] items-center bg-white  m-3 md:flex-row md:max-w-xl"
                          key={book.id} data-aos-once="true" data-aos="zoom-in-up">
