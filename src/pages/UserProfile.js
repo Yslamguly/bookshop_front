@@ -5,41 +5,34 @@ import {useToken} from "../hooks/auth/useToken";
 import {logout} from "../hooks/auth/logout";
 import {useState} from "react";
 import ErrorMessage from "../components/ErrorMessage";
+import UserData from "../components/UserData";
+import no_data_illustration from "../assets/no-data-illustration.svg";
 
 export default function UserProfile() {
-    const [purchases,setPurchases] = useState([])
+    const [purchases, setPurchases] = useState([])
     const [showError, setShowError] = useState(false)
-    const [errorMessage,setErrorMessage] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
+    const [activeComponent, setActiveComponent] = useState('UserData')
     const {userId} = useAuth()
     const {rememberMe, setAuth} = useAuth()
     const [token] = useToken(rememberMe)
-    const  getUserPurchases = () =>{
-        axios.get(`http://localhost:8000/orders/getUserOrders/${userId}`,{
-            headers:{
-                authorization:`Bearer ${token}`
+    const onShowMyData = (componentName) => {
+        setActiveComponent(componentName)
+    }
+    const onShowMyPurchases = async (componentName) => {
+        await getUserPurchases()
+        console.log(purchases.length)
+        setActiveComponent(componentName)
+    }
+    const getUserPurchases = async () => {
+        await axios.get(`http://localhost:8000/orders/getUserOrders/${userId}`, {
+            headers: {
+                authorization: `Bearer ${token}`
             }
-        }).then((response)=>{
+        }).then((response) => {
             setPurchases(response.data)
             console.log(response.data)
         })
-            .catch(error => {
-                if (error.response.status === 401) {
-                    logout()
-                    setAuth(false)
-                    setShowError(true)
-                    setErrorMessage('Please, login to perform the operation')
-                }
-                if (error.response.status === 500) {
-                    window.location.pathname = "/500"
-                }
-            })
-    }
-    const  getUserData = () =>{
-        axios.get(`http://localhost:8000/customers/getCustomerData/${userId}`,{
-            headers:{
-                authorization:`Bearer ${token}`
-            }
-        }).then((response)=>console.log(response.data))
             .catch(error => {
                 if (error.response.status === 401) {
                     logout()
@@ -73,28 +66,35 @@ export default function UserProfile() {
                                     className="space-y-4 border-gray-200 pb-6 text-sm font-medium text-gray-900">
 
                                     <li>
-                                        <button onClick={getUserData}>My data</button>
+                                        <button onClick={() => onShowMyData('UserData')}>My data</button>
                                     </li>
                                     <li>
-                                        <button onClick={getUserPurchases}>My purchases</button>
+                                        <button onClick={() => onShowMyPurchases('UserPurchases')}>My purchases</button>
                                     </li>
                                 </ul>
                             </div>
                             <div className="lg:col-span-3">
                                 <div className="flex overflow-x-scroll pb-10 hide-scroll-bar max-h-96 w-full">
                                     <div className="flex flex-col lg:ml-40 md:ml-20 ml-10 w-full ">
-                                        {purchases.map((product,index)=>(
-                                            <div className="inline-block px-3 py-3 w-full">
-                                                <div
-                                                    className="w-120 px-3 py-3 lg:h-32 sm:h-48 flex justify-between overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out">
-                                                    <PurchasedItem product={product}/>
-                                                    <img
-                                                        src={`${product.image}`}
-                                                        className=" w-30 rounded-lg h-28"
-                                                        alt={'book cover'}/>
-                                                </div>
-                                            </div>
-                                        ))}
+                                        {activeComponent === 'UserData' && <UserData/>}
+                                        {activeComponent === 'UserPurchases' ? (
+                                            purchases.length > 0 ? (
+                                                purchases.map((product, index) => (
+                                                    <div className="inline-block px-3 py-3 w-full" key={index}>
+                                                        <div className="w-120 px-3 py-3 lg:h-32 sm:h-48 flex justify-between overflow-hidden rounded-lg shadow-md bg-white hover:shadow-xl transition-shadow duration-300 ease-in-out">
+                                                            <PurchasedItem product={product} />
+                                                            <img src={`${product.image}`} className="w-30 rounded-lg h-28" alt={'book cover'} />
+                                                        </div>
+                                                    </div>
+                                                ))
+                                            ) : (
+                                                <img
+                                                    className="mx-auto max-w-full h-96 "
+                                                    src={no_data_illustration}
+                                                    alt="no data found"
+                                                />
+                                            )
+                                        ) : null}
                                     </div>
                                 </div>
                             </div>
