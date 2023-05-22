@@ -5,7 +5,7 @@ import {useToken} from "../../hooks/auth/useToken";
 import logo from '../../assets/undraw_education_f8ru.svg'
 import {useAuth} from "../../hooks/UserContext";
 import ErrorMessage from "../../components/ErrorMessage";
-import {useQueryParams} from "../../utils/useQueryParams";
+import {useQueryParams} from "../../hooks/useQueryParams";
 
 
 export function SignUp() {
