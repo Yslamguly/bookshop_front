@@ -1,5 +1,4 @@
 import {BrowserRouter as Router, Route, Routes} from 'react-router-dom';
-import { UserInfoPage } from './pages/UserInfoPage';
 import {PrivateRoute} from "./hooks/auth/PrivateRoutes";
 import SignIn from "./pages/auth/SignIn";
 import {SignUp} from "./pages/auth/SignUp";
