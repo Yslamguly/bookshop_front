@@ -5,7 +5,8 @@ import no_data_illustration from "../assets/no-data-illustration.svg"
 import axios from "axios";
 import Pagination from "../components/Pagination";
 import {SortOptions} from "../components/SortOptions";
-import {fetchBooks, fetchCategories} from "../api/BooksApi";
+import {fetchCategories} from "../api/CategoriesApi"
+import {fetchBooks} from "../api/BooksApi";
 import {sortBooks} from "../utils/functions";
 import {SERVER_URL} from "../globals";
 
