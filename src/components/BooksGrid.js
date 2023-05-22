@@ -8,7 +8,7 @@ import {logout} from "../hooks/auth/logout";
 import {useAuth} from "../hooks/UserContext";
 import {useToken} from "../hooks/auth/useToken";
 import ErrorMessage from "./ErrorMessage";
-import {addBookToShoppingCart} from "../utils/functions";
+import {addBookToShoppingCart} from "../api/ShoppingCartApi";
 import AddedBookNotification from "./AddedBookNotification";
 
 export const BooksGrid = (props) => {

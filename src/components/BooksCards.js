@@ -5,9 +5,10 @@ import {useToken} from "../hooks/auth/useToken";
 import {useAuth} from "../hooks/UserContext";
 import AddedBookNotification from "./AddedBookNotification";
 import ErrorMessage from "./ErrorMessage";
-import {addBookToShoppingCart, getBooksDescription, trimStringsInArray} from '../utils/functions'
+import {addBookToShoppingCart} from '../api/ShoppingCartApi'
+import {getBooksDescription} from '../api/BooksApi'
+import {trimStringsInArray} from '../utils/functions'
 import {Skeleton} from "./Skeleton";
-import book_lover_icon from '../assets/undraw_book_lover_re_rwjy.svg'
 
 export const BooksCards = (props) => {
     const [token] = useToken()

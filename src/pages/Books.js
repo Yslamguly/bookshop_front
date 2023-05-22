@@ -5,7 +5,9 @@ import no_data_illustration from "../assets/no-data-illustration.svg"
 import axios from "axios";
 import Pagination from "../components/Pagination";
 import {SortOptions} from "../components/SortOptions";
-
+import {fetchBooks, fetchCategories} from "../api/BooksApi";
+import {sortBooks} from "../utils/functions";
+import {SERVER_URL} from "../globals";
 
 
 export default function Books() {
@@ -22,23 +24,30 @@ export default function Books() {
     const [totalBooks,setTotalBooks] = useState()
 
     useEffect( ()=>{
-        axios.get(`http://localhost:8000/books?page=${currentPage}&limit=${limitPerPage}&selling_price_from=${priceFrom}&selling_price_to=${priceTo}&publication_year_from=${publicationYearFrom}&publication_year_to=${publicationYearTo}&sort_value=id`)
-            .then((response)=>{
-                const allBooks = response.data.outcome
-                setBooks(sortElements(sortOption,allBooks))
-                setTotalBooks(response.data.total_items)
-                return axios.get('http://localhost:8000/categories')
-            }).then((response)=>{
-                setCategories(response.data)
-        }).catch(error=>console.error(`Error: ${error}`))
+        const fetchBooksAndCategories = async () => {
+            const allBooks = await fetchBooks(
+                currentPage,
+                limitPerPage,
+                priceFrom,
+                priceTo,
+                publicationYearFrom,
+                publicationYearTo,
+            );
+            setBooks(sortBooks(sortOption, allBooks));
+
+            const allCategories = await fetchCategories();
+            setCategories(allCategories);
+        };
+
+        fetchBooksAndCategories();
     },[currentPage,sortOption])
 
     const onApplyFiltersClick = async ()=>{
-        await axios.get(`http://localhost:8000/books?page=1&limit=${limitPerPage}&selling_price_from=${priceFrom}&selling_price_to=${priceTo}&publication_year_from=${publicationYearFrom}&publication_year_to=${publicationYearTo}&sort_value=id&category_id=${categoryId}`)
+        await axios.get(`${SERVER_URL}/books?page=1&limit=${limitPerPage}&selling_price_from=${priceFrom}&selling_price_to=${priceTo}&publication_year_from=${publicationYearFrom}&publication_year_to=${publicationYearTo}&sort_value=id&category_id=${categoryId}`)
             .then((response)=>{
                 const allBooks = response.data.outcome
                 console.log(books)
-                setBooks(sortElements(sortOption,allBooks))
+                setBooks(sortBooks(sortOption,allBooks))
                 setTotalBooks(response.data.total_items)
             })
             .catch(error=>console.error(`Error: ${error}`))
@@ -61,26 +70,6 @@ export default function Books() {
         setCurrentPage(pageNumber);
     };
 
-    const sortElements = (option,array) =>{
-        switch (option){
-            case
-                "Date: new to old": return [...array].sort((a, b) => b.publication_year - a.publication_year)
-            case
-                "Date: old to new": return [...array].sort((a, b) => a.publication_year - b.publication_year)
-            case
-                "A-Z": return [...array].sort((a, b) => a.title > b.title ? 1 : -1)
-            case
-                "Z-A": return [...array].sort((a, b) => a.title > b.title ? -1 : 1)
-            case
-                "Price: high to low": return [...array].sort((a, b) => b.selling_price - a.selling_price)
-            case
-                "Price: low to high": return [...array].sort((a, b) => a.selling_price - b.selling_price)
-            default:
-                return [...array].sort((a, b) => b.id - a.id)
-
-        }
-    }
-
     return (
         <>
             <div className="bg-white">
@@ -97,7 +86,6 @@ export default function Books() {
                     </div>
                     <div>
                         {books.length > 0 &&
-                            // <SortOptions sortBooks={sortBooks} selectOptions={bookSortOptions} />
                             <SortOptions setSortOptions={(option)=>setSortOption(option)}/>
                         }
                         <div className="mb-auto max-w-2xl py-16 px-4 sm:py-15 sm:px-6 lg:max-w-7xl lg:px-8">
