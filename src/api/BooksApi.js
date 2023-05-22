@@ -21,16 +21,6 @@ export const fetchBooks = async (
     }
 };
 
-export const fetchCategories = async () => {
-    try {
-        const response = await axios.get(`${SERVER_URL}/categories`);
-        return response.data;
-    } catch (error) {
-        console.error(`Error: ${error}`);
-        return [];
-    }
-};
-
 export async function getBooksDescription(book){
     return axios.get(`${book.description}`)
         .then((response)=>{
