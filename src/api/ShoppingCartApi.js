@@ -8,3 +8,9 @@ export function addBookToShoppingCart(product,userId,token) {
         headers: {authorization: `Bearer ${token}`}
     })
 }
+
+export const fetchUserShoppingCart = (userId,token) =>{
+    return axios.get(`http://localhost:8000/shopping_cart/${userId}`,{
+        headers: {authorization: `Bearer ${token}`}
+    })
+}
