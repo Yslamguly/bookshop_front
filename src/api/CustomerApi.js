@@ -8,9 +8,17 @@ export const getUserData = async (token,userId) => {
 }
 
 export const updateCustomerData = async (token,userId,first_name,last_name,phoneNumber) => {
-    return axios.put(`http://localhost:8000/customers/updateCustomerData/${userId}`, {
+    return axios.put(`${SERVER_URL}/customers/updateCustomerData/${userId}`, {
         first_name: first_name, last_name: last_name, phone_number: phoneNumber
     }, {
         headers: {authorization: `Bearer ${token}`}
+    })
+}
+
+export const getUserOrders = async (token,userId) => {
+    return await axios.get(`${SERVER_URL}/orders/getUserOrders/${userId}`, {
+        headers: {
+            authorization: `Bearer ${token}`
+        }
     })
 }
