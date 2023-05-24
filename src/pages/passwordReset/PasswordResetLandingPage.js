@@ -3,6 +3,7 @@ import {useParams} from "react-router-dom";
 import {PasswordResetSuccess} from "./PasswordResetSuccess";
 import axios from "axios";
 import ErrorMessage from "../../components/ErrorMessage";
+import {PasswordResetFail} from "./PasswordResetFail";
 
 export const PasswordResetLandingPage = () => {
     const [errorMessage, setErrorMessage] = useState('')
@@ -12,7 +13,7 @@ export const PasswordResetLandingPage = () => {
     const [confirmPassword, setConfirmPassword] = useState('')
 
     const {passwordResetCode} = useParams()
-    // if (isFailure) return (<PasswordResetFail/>)
+    if (isFailure) return (<PasswordResetFail/>)
     if (isSuccess) return (<PasswordResetSuccess/>)
 
     const  onSubmit = () => {
