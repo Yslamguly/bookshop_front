@@ -1,7 +1,6 @@
 import {PhotoIcon, UserCircleIcon} from '@heroicons/react/24/solid'
 import {useEffect, useState} from "react";
 import {useUser} from "../hooks/auth/useUser";
-import axios from "axios";
 import {useAuth} from "../hooks/UserContext";
 import {useToken} from "../hooks/auth/useToken";
 import ErrorMessage from "./ErrorMessage";
@@ -40,7 +39,6 @@ export default function UserData() {
         })
     }, [user])
 
-    //TODO store user in U state
     const areInputsEmpty = () => !first_name || !last_name
 
     const onSave = () => {
