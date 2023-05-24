@@ -34,3 +34,12 @@ export async function getBooksDescription(book) {
             }
         ).catch((error) => console.log(error))
 }
+
+export const getBookDetails = async (bookId) => {
+    return await axios.get(`${SERVER_URL}/books/details?book_id=${bookId}`)
+}
+
+
+export const getBestSellers = async () => {
+    return await axios.get(`${SERVER_URL}/books/bestSellers`)
+}
