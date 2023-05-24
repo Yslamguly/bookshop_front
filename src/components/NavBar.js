@@ -2,7 +2,6 @@ import {Fragment} from 'react'
 import {Disclosure, Menu, Transition} from '@headlessui/react'
 import {Bars3Icon, XMarkIcon,ShoppingBagIcon} from '@heroicons/react/24/outline'
 import logo from '../assets/inkwellBook.svg'
-import {useUser} from '../hooks/auth/useUser';
 import {useNavigate} from "react-router-dom";
 import {useAuth} from "../hooks/UserContext";
 import {useShoppingCart} from "../hooks/ShoppingCartContext";
@@ -19,9 +18,8 @@ export default function NavBar() {
     function classNames(...classes) {
         return classes.filter(Boolean).join(' ')
     }
-    const { setAuth, auth,rememberMe } = useAuth();
+    const { setAuth, auth } = useAuth();
     const {setShowShoppingCart} = useShoppingCart()
-    const user = useUser(rememberMe);
     const navigate = useNavigate();
     const logOut = () => {
         logout()
@@ -131,13 +129,12 @@ export default function NavBar() {
                                                     </Menu.Item>
                                                     <Menu.Item>
                                                         {({active}) => (
-                                                            <a
+                                                            <button
                                                                 onClick={logOut}
-                                                                href="#"
-                                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 text-sm text-gray-700')}
+                                                                className={classNames(active ? 'bg-gray-100' : '', 'block px-4 py-2 w-full text-start text-sm text-gray-700')}
                                                             >
                                                                 Sign out
-                                                            </a>
+                                                            </button>
                                                         )}
                                                     </Menu.Item>
                                                 </Menu.Items>
