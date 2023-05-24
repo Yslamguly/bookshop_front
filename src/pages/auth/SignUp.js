@@ -7,7 +7,6 @@ import ErrorMessage from "../../components/ErrorMessage";
 import {useQueryParams} from "../../hooks/useQueryParams";
 import {getGoogleUrl, register} from "../../api/AuthApi";
 
-
 export function SignUp() {
     const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
     const [, setToken] = useToken(isRememberMeChecked)
@@ -236,8 +235,8 @@ export function SignUp() {
                         </button>
                     </div>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                        By creating an account, you agree to Bookshop’s <a className={'text-indigo-600'} href={'#'}>Privacy
-                        Notice</a> and <a className={'text-indigo-600'} href={'#'}>Terms of Use.</a>
+                        By creating an account, you agree to Bookshop’s <a className={'text-indigo-600'} href={'/privacy'}>Privacy
+                        Notice</a> and <a className={'text-indigo-600'} href={'/termOfUse'}>Terms of Use.</a>
                     </p>
                 </div>
             </div>
