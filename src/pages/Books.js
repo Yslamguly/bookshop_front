@@ -2,13 +2,11 @@ import {useEffect, useState} from "react";
 import {Filters} from "../components/Filters";
 import {BooksGrid} from "../components/BooksGrid";
 import no_data_illustration from "../assets/no-data-illustration.svg"
-import axios from "axios";
 import Pagination from "../components/Pagination";
 import {SortOptions} from "../components/SortOptions";
 import {fetchCategories} from "../api/CategoriesApi"
 import {fetchBooks} from "../api/BooksApi";
 import {sortBooks} from "../utils/functions";
-import {SERVER_URL} from "../globals";
 
 
 export default function Books() {
@@ -22,7 +20,7 @@ export default function Books() {
     const [categoryId,setCategoryId] = useState()
     const [limitPerPage] = useState(15)
     const [currentPage,setCurrentPage] = useState(1)
-    const [totalBooks,setTotalBooks] = useState()
+    const [booksCount,setBooksCount] = useState()
 
     useEffect( ()=>{
         const fetchBooksAndCategories = async () => {
@@ -34,7 +32,7 @@ export default function Books() {
                 publicationYearFrom,
                 publicationYearTo,
             );
-            setBooks(sortBooks(sortOption, allBooks));
+            setBooks(sortBooks(sortOption, allBooks.books));
 
             const allCategories = await fetchCategories();
             setCategories(allCategories);
@@ -44,14 +42,16 @@ export default function Books() {
     },[currentPage,sortOption])
 
     const onApplyFiltersClick = async ()=>{
-        await axios.get(`${SERVER_URL}/books?page=1&limit=${limitPerPage}&selling_price_from=${priceFrom}&selling_price_to=${priceTo}&publication_year_from=${publicationYearFrom}&publication_year_to=${publicationYearTo}&sort_value=id&category_id=${categoryId}`)
-            .then((response)=>{
-                const allBooks = response.data.outcome
-                console.log(books)
-                setBooks(sortBooks(sortOption,allBooks))
-                setTotalBooks(response.data.total_items)
-            })
-            .catch(error=>console.error(`Error: ${error}`))
+        const filteredBooks = await fetchBooks(currentPage,
+            limitPerPage,
+            priceFrom,
+            priceTo,
+            publicationYearFrom,
+            publicationYearTo,
+            categoryId);
+
+        setBooks(sortBooks(sortOption,filteredBooks.books))
+        setBooksCount(filteredBooks.booksCount)
     }
     const onPreviousPageClick = () =>{
         if (currentPage !== 1) {
@@ -59,10 +59,10 @@ export default function Books() {
         }
     }
     const onNextPageClick = () =>{
-        if(totalBooks/limitPerPage === 0){
+        if(booksCount/limitPerPage === 0){
             return
         }
-        if (currentPage !== Math.ceil(totalBooks / limitPerPage)) {
+        if (currentPage !== Math.ceil(booksCount / limitPerPage)) {
             setCurrentPage(currentPage + 1);
 
         }
@@ -100,7 +100,7 @@ export default function Books() {
                     </div>
                 </div>
                 <Pagination limitPerPage={limitPerPage}
-                            totalBooks={totalBooks}
+                            totalBooks={booksCount}
                             paginate={paginate}
                             currentPage={currentPage}
                             onPreviousPageClick={onPreviousPageClick}
