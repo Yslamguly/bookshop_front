@@ -4,6 +4,7 @@ import {PasswordResetSuccess} from "./PasswordResetSuccess";
 import axios from "axios";
 import ErrorMessage from "../../components/ErrorMessage";
 import {PasswordResetFail} from "./PasswordResetFail";
+import {resetPassword} from "../../api/ResetPasswordApi";
 
 export const PasswordResetLandingPage = () => {
     const [errorMessage, setErrorMessage] = useState('')
@@ -17,8 +18,7 @@ export const PasswordResetLandingPage = () => {
     if (isSuccess) return (<PasswordResetSuccess/>)
 
     const  onSubmit = () => {
-        axios.put(`http://localhost:8000/customers/${passwordResetCode}/reset-password`,
-            {newPassword:password, confirmPassword:confirmPassword})
+        resetPassword(passwordResetCode,password,confirmPassword)
             .then(()=>setIsSuccess(true))
             .catch((error)=> {
                 if(error.response.status === 400){
