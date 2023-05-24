@@ -6,7 +6,8 @@ import {useToken} from "../hooks/auth/useToken";
 import {useAuth} from "../hooks/UserContext";
 import {logout} from "../hooks/auth/logout";
 import ErrorMessage from "../components/ErrorMessage";
-// import {cart_items} from "../components/NonAuthShoppingCart";
+import {getBookDetails} from "../api/BooksApi";
+import {addBookToShoppingCart} from "../api/ShoppingCartApi";
 
 export const BookDetails = () => {
     const {bookId} = useParams()
@@ -15,11 +16,11 @@ export const BookDetails = () => {
     const [bookDescription, setBookDescription] = useState()
     const [active, setActive] = useState(false)
     const [showError, setShowError] = useState(false)
-    const [errorMessage,setErrorMessage] = useState('')
+    const [errorMessage, setErrorMessage] = useState('')
     const [token] = useToken()
     const {userId, setAuth} = useAuth()
     useEffect(() => {
-        axios.get(`http://localhost:8000/books/details?book_id=${bookId}`)
+        getBookDetails(bookId)
             .then((response) => {
                 const book = response.data;
                 setBook(book)
@@ -36,36 +37,26 @@ export const BookDetails = () => {
             })
     }, [])
     const onAddToCartClicked = async () => {
-        // if (!userId) {
-        //     cart_items.push(book)
-        // }
-        await axios.post(`http://localhost:8000/shopping_cart/addBook/${userId}`, {
-            book_id: book.id,
-            price: book.selling_price
-        }, {
-            headers: {Authorization: `Bearer ${token}`}
-        })
-        .then(() => {
-            setActive(true)
-            setTimeout(() => {
-                setActive(false)
-            }, 2000)
-        })
-        .catch((error) => {
-            if (error.response.status === 401) {
-                logout()
-                setAuth(false)
-                setShowError(true)
-                setErrorMessage('Please, login to perform the operation')
-            }
-            else if(error.response.status===409){
-                setShowError(true)
-                setErrorMessage('It looks like you already have this book in your cart.')
-            }
-            else {
-                window.location.pathname = "/500"
-            }
-        })
+        addBookToShoppingCart(book, userId, token)
+            .then(() => {
+                setActive(true)
+                setTimeout(() => {
+                    setActive(false)
+                }, 2000)
+            })
+            .catch((error) => {
+                if (error.response.status === 401) {
+                    logout()
+                    setAuth(false)
+                    setShowError(true)
+                    setErrorMessage('Please, login to perform the operation')
+                } else if (error.response.status === 409) {
+                    setShowError(true)
+                    setErrorMessage('It looks like you already have this book in your cart.')
+                } else {
+                    window.location.pathname = "/500"
+                }
+            })
     }
 
 

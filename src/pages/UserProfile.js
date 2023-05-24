@@ -7,6 +7,7 @@ import {useState} from "react";
 import ErrorMessage from "../components/ErrorMessage";
 import UserData from "../components/UserData";
 import no_data_illustration from "../assets/no-data-illustration.svg";
+import {getUserOrders} from "../api/CustomerApi";
 
 export default function UserProfile() {
     const [purchases, setPurchases] = useState([])
@@ -25,11 +26,8 @@ export default function UserProfile() {
         setActiveComponent(componentName)
     }
     const getUserPurchases = async () => {
-        await axios.get(`http://localhost:8000/orders/getUserOrders/${userId}`, {
-            headers: {
-                authorization: `Bearer ${token}`
-            }
-        }).then((response) => {
+        getUserOrders(token,userId)
+            .then((response) => {
             setPurchases(response.data)
             console.log(response.data)
         })
