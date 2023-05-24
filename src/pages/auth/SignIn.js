@@ -5,7 +5,8 @@ import {useToken} from "../../hooks/auth/useToken";
 import logo from '../../assets/inkwellBook.svg'
 import {useAuth} from "../../hooks/UserContext";
 import ErrorMessage from "../../components/ErrorMessage";
-import {useQueryParams} from "../../utils/useQueryParams";
+import {useQueryParams} from "../../hooks/useQueryParams";
+import {getGoogleUrl, login} from "../../api/AuthApi";
 
 export default function SignIn() {
     const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
@@ -29,7 +30,7 @@ export default function SignIn() {
     }, [oauthToken, setToken, navigate])
 
     useEffect(() => {
-        axios.get('http://localhost:8000/auth/google/url')
+        getGoogleUrl()
             .then((response) => {
                 const {url} = response.data
                 setGoogleOauthUrl(url)
@@ -42,23 +43,20 @@ export default function SignIn() {
         setIsRememberMeChecked(!rememberMe)
     }
     const onLoginClicked = async () => {
-        try {
-            const response = await axios.post('http://localhost:8000/customers/login', {
-                email_address: emailValue,
-                password: passwordValue
-            });
-            const {token} = response.data
-            setToken(token)
-            setAuth(true)
-            navigate("/books")
-            window.location.reload();
-        } catch (e) {
-            if (e.code === 'ERR_NETWORK') {
-                navigate("/500")
-            }
-            setErrorMessage(e.response.data.message)
-            setShowError(true)
-        }
+        login(emailValue, passwordValue)
+            .then((response) => {
+                const {token} = response.data
+                setToken(token)
+                setAuth(true)
+                navigate("/books")
+                window.location.reload();
+            }).catch((e) => {
+                if (e.code === 'ERR_NETWORK') {
+                    navigate("/500")
+                }
+                setErrorMessage(e.response.data.message)
+                setShowError(true)
+            })
     }
     return (
         <>

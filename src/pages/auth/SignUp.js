@@ -1,12 +1,11 @@
 import {useNavigate} from "react-router-dom";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import {useToken} from "../../hooks/auth/useToken";
 import logo from '../../assets/undraw_education_f8ru.svg'
 import {useAuth} from "../../hooks/UserContext";
 import ErrorMessage from "../../components/ErrorMessage";
-import {useQueryParams} from "../../utils/useQueryParams";
-
+import {useQueryParams} from "../../hooks/useQueryParams";
+import {getGoogleUrl, register} from "../../api/AuthApi";
 
 export function SignUp() {
     const [isRememberMeChecked, setIsRememberMeChecked] = useState(false)
@@ -34,7 +33,7 @@ export function SignUp() {
     }, [oauthToken, setToken, navigate])
 
     useEffect(() => {
-        axios.get('http://localhost:8000/auth/google/url')
+        getGoogleUrl()
             .then((response) => {
                 const {url} = response.data
                 setGoogleOauthUrl(url)
@@ -54,21 +53,15 @@ export function SignUp() {
             setErrorMessage('Please fill in the required fields!')
             setShowError(true)
         } else {
-            await axios.post(`http://localhost:8000/customers/register`, {
-                first_name: firstName,
-                last_name: lastName,
-                email_address: emailValue,
-                phone_number: phoneNumber,
-                password: passwordValue,
-                confirm_password: confirmPasswordValue
-            }).then((response) => {
-                const {token} = response.data
-                console.log(token)
-                setToken(token)
-                setAuth(true)
-                navigate("/email-verification")
-                window.location.reload();
-            })
+            register(firstName, lastName, emailValue, phoneNumber, passwordValue, confirmPasswordValue)
+                .then((response) => {
+                    const {token} = response.data
+                    console.log(token)
+                    setToken(token)
+                    setAuth(true)
+                    navigate("/email-verification")
+                    window.location.reload();
+                })
                 .catch((e) => {
                         const message = e.response.data
                         setErrorMessage(Object.values(message)[0]);
@@ -242,8 +235,8 @@ export function SignUp() {
                         </button>
                     </div>
                     <p className="mt-2 text-center text-sm text-gray-600">
-                        By creating an account, you agree to Bookshop’s <a className={'text-indigo-600'} href={'#'}>Privacy
-                        Notice</a> and <a className={'text-indigo-600'} href={'#'}>Terms of Use.</a>
+                        By creating an account, you agree to Bookshop’s <a className={'text-indigo-600'} href={'/privacy'}>Privacy
+                        Notice</a> and <a className={'text-indigo-600'} href={'/termOfUse'}>Terms of Use.</a>
                     </p>
                 </div>
             </div>

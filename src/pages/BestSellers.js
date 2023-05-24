@@ -1,15 +1,15 @@
 import {BooksCards} from "../components/BooksCards";
 import {useEffect, useState} from "react";
-import axios from "axios";
 import no_data_illustration from "../assets/no-data-illustration.svg";
 import book_lover_icon from "../assets/undraw_book_lover_re_rwjy.svg";
+import {getBestSellers} from "../api/BooksApi";
 
 export const BestSellers = () =>{
     const [books,setBooks] = useState([])
 
 
     useEffect(()=>{
-        axios.get('http://localhost:8000/books/bestSellers')
+        getBestSellers()
             .then((response)=>{
                 setBooks(response.data)
             })
