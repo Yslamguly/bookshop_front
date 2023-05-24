@@ -9,6 +9,7 @@ import empty_cart from "../assets/empty_cart.svg";
 import ErrorMessage from "../components/ErrorMessage";
 import {fetchUserShoppingCart, updateBookQuantity} from "../api/ShoppingCartApi";
 import {createCheckoutSession} from "../api/StripeApi";
+import {calculateSubtotal} from "../utils/functions";
 
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
@@ -85,13 +86,6 @@ export const ShoppingCart = (props) => {
                     window.location.href = res.data.url
                 }
             }).catch((err) => console.error(err))
-    }
-    const calculateSubtotal = () => {
-        let sum = 0;
-        books.map((product) => (
-            sum += product.quantity * product.selling_price
-        ))
-        return sum
     }
 
     return (
@@ -224,7 +218,7 @@ export const ShoppingCart = (props) => {
                                                     <div
                                                         className="flex justify-between text-base font-medium text-gray-900">
                                                         <p>Subtotal</p>
-                                                        <p>{calculateSubtotal()}$</p>
+                                                        <p>{calculateSubtotal(books)}$</p>
                                                     </div>
                                                     <p className="mt-0.5 text-sm text-gray-500">Shipping and taxes
                                                         calculated at checkout.</p>

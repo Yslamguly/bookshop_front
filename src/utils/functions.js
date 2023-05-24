@@ -22,4 +22,12 @@ export const sortBooks = (option, booksArray) =>{
              return [...booksArray].sort((a, b) => b.id - a.id)
 
      }
- }
+}
+
+export const calculateSubtotal = (books) =>{
+    let sum = 0;
+    books.map((product) => (
+        sum += product.quantity * product.selling_price
+    ))
+    return sum
+}
