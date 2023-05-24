@@ -16,6 +16,7 @@ export const ShoppingCart = (props) => {
     const [showError, setShowError] = useState(false)
     const [errorMessage, setErrorMessage] = useState('')
     const [lastDeletedBook, setLastDeletedBook] = useState()
+    const [quantityUpdated,setQuantityUpdated] = useState(false)
     const {userId} = useAuth()
     const {rememberMe, setAuth} = useAuth()
     const [token] = useToken(rememberMe)
@@ -38,7 +39,7 @@ export const ShoppingCart = (props) => {
                     }
                 })
         }
-    }, [props.showShoppingCart, lastDeletedBook, userId, token, setAuth])
+    }, [props.showShoppingCart, lastDeletedBook, userId, token, setAuth, quantityUpdated])
     const onRemoveClick = (bookId) => {
         axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
             data: {shopping_cart_item_book_id: bookId},
@@ -64,6 +65,7 @@ export const ShoppingCart = (props) => {
     const onQuantityChange = (quantity, bookId, price) => {
         updateBookQuantity(quantity, bookId, price, userId, token)
             .then((response) => {
+                setQuantityUpdated(!quantityUpdated)
                 console.log(response.data)
             }).catch(error => {
             if (error.response.status === 401) {
