@@ -1,7 +1,6 @@
 import {useNavigate} from "react-router-dom";
 import {useState} from "react";
-import ErrorMessage from "../../components/ErrorMessage";
-import axios from "axios";
+import {forgotPassword} from "../../api/ResetPasswordApi";
 
 export const ForgotPassword = () =>{
     const [errorMessage,setErrorMessage] = useState('')
@@ -9,7 +8,7 @@ export const ForgotPassword = () =>{
     const [email,setEmail] = useState('')
     const navigate = useNavigate()
     const onSubmit = () =>{
-        axios.put(`http://localhost:8000/password/forgot-password/${email}`)
+        forgotPassword(email)
             .then(()=>setSuccess(true))
             .then(()=>setTimeout(()=>navigate('/login'),3000))
             .catch((e)=>setErrorMessage(e.message))
