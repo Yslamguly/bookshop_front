@@ -7,7 +7,8 @@ import {useAuth} from "../hooks/UserContext";
 import {logout} from "../hooks/auth/logout";
 import empty_cart from "../assets/empty_cart.svg";
 import ErrorMessage from "../components/ErrorMessage";
-import {fetchUserShoppingCart} from "../api/ShoppingCartApi";
+import {fetchUserShoppingCart, updateBookQuantity} from "../api/ShoppingCartApi";
+import {createCheckoutSession} from "../api/StripeApi";
 
 export const ShoppingCart = (props) => {
     const [books, setBooks] = useState([]);
@@ -18,7 +19,7 @@ export const ShoppingCart = (props) => {
     const {rememberMe, setAuth} = useAuth()
     const [token] = useToken(rememberMe)
     useEffect(() => {
-        if(userId){
+        if (userId) {
             fetchUserShoppingCart(userId, token)
                 .then((response) => {
                     const allBooks = response.data
@@ -37,12 +38,12 @@ export const ShoppingCart = (props) => {
                 })
         }
     }, [props.showShoppingCart, lastDeletedBook, userId, token, setAuth])
-    const onRemoveClick = (bookId, index) => {
+    const onRemoveClick = (bookId) => {
         axios.delete(`http://localhost:8000/shopping_cart/deleteBook/${userId}`, {
             data: {shopping_cart_item_book_id: bookId},
             headers: {authorization: `Bearer ${token}`}
         }).then((response) => {
-            setLastDeletedBook(index)
+            setLastDeletedBook(bookId)
             // setBooks(books.splice(index,1))
             console.log(response)
         }).catch((error) => {
@@ -60,15 +61,10 @@ export const ShoppingCart = (props) => {
         })
     }
     const onQuantityChange = (quantity, bookId, price) => {
-        axios.patch(`http://localhost:8000/shopping_cart/updateQuantity/${userId}`, {
-            book_id: bookId,
-            quantity: quantity,
-            total_price: quantity * price
-        }, {
-            headers: {authorization: `Bearer ${token}`}
-        }).then((response) => {
-            console.log(response.data)
-        }).catch(error => {
+        updateBookQuantity(quantity, bookId, price, userId, token)
+            .then((response) => {
+                console.log(response.data)
+            }).catch(error => {
             if (error.response.status === 401) {
                 logout()
                 setAuth(false)
@@ -83,14 +79,12 @@ export const ShoppingCart = (props) => {
     }
 
     const onCheckoutClick = () => {
-        axios.post('http://localhost:8000/stripe/create-checkout-session', {
-            books: books,
-            userId: userId
-        }).then((res) => {
-            if (res.data.url) {
-                window.location.href = res.data.url
-            }
-        }).catch((err) => console.error(err))
+        createCheckoutSession(books, userId)
+            .then((res) => {
+                if (res.data.url) {
+                    window.location.href = res.data.url
+                }
+            }).catch((err) => console.error(err))
     }
     const calculateSubtotal = () => {
         let sum = 0;
@@ -108,7 +102,6 @@ export const ShoppingCart = (props) => {
                 header={'Error'}
                 description={errorMessage}
             />
-            {/*<SessionExpiredBanner/>*/}
             <Transition.Root show={props.showShoppingCart} as={Fragment}>
                 <Dialog as="div" className="relative z-1000" onClose={() => props.setShowShoppingCart(false)}>
                     <Transition.Child
