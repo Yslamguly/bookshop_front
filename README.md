@@ -1,5 +1,7 @@
 # Fullstack App - Frontend Part
 
+[Screenshots from the project](https://drive.google.com/drive/folders/1atbu0vHFK0NLf9ODxLOuzQXW5q5pLV8n?usp=sharing)
+
 This Markdown file provides an overview of the frontend part of my fullstack app (online bookshop). The app is developed using React and Tailwind CSS. It is designed to be responsive and includes several essential features, such as pagination, sorting, filtering, and a shopping cart. The app's backend API is hosted in a separate repository, and its link is provided below.
 
 ## Features
